@@ -51,16 +51,15 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
           "/information?apiKey=65474d667d2146c088471d7329e0d3db";
       print(infoUrl);
       _fetchDetail(infoUrl);
-     // recipe = DBProvider.db.getFav.(widget.recipeId);
+      // recipe = DBProvider.db.getFav.(widget.recipeId);
     });
   }
-  
+
   _fetchDetail(String jsonUrl) async {
     setState(() {
       isDetailLoading = true;
     });
 
-    
     final response = await http.get(jsonUrl);
 
     if (response.statusCode == 200) {
@@ -86,9 +85,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
 
   bool isLiked = true;
 
-
   Widget _recipeImage() {
- 
     return Material(
       child: AnimatedBuilder(
         builder: (context, child) {
@@ -133,76 +130,89 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                 padding: const EdgeInsets.only(top: 10, right: 20),
                 child: Column(
                   children: [
-                     Material(
-      color: Colors.transparent,
-      child: Center(
-        child: Ink(
-          decoration: const ShapeDecoration(
-            color: LightColor.main,
-            shape: CircleBorder(),
-          ),
-          child: IconButton(
-             icon: 
-                    Icon(recipeDetail.isliked ? Icons.favorite : Icons.favorite_border),
-                    color: recipeDetail.isliked ? LightColor.red : LightColor.background,
-            onPressed: () {
-                 
-             
-              if(!recipeDetail.isliked){
-                              Recipe fav = new Recipe();
-                              fav.RecipeFav(
-                                recipeDetail.id,
-                                recipeDetail.name,
-                                recipeDetail.readyInMinutes,
-                                recipeDetail.image,
-                                recipeDetail.isliked,
-                                recipeDetail.isOnList
-                              );
+                    Material(
+                      color: Colors.transparent,
+                      child: Center(
+                        child: Ink(
+                          decoration: const ShapeDecoration(
+                            color: LightColor.main,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: Icon(recipeDetail.isliked
+                                ? Icons.favorite
+                                : Icons.favorite_border),
+                            color: recipeDetail.isliked
+                                ? LightColor.red
+                                : LightColor.background,
+                            onPressed: () {
+                              if (!recipeDetail.isliked) {
+                                Recipe fav = new Recipe();
+                                fav.RecipeFav(
+                                    recipeDetail.id,
+                                    recipeDetail.name,
+                                    recipeDetail.readyInMinutes,
+                                    recipeDetail.image,
+                                    recipeDetail.isliked,
+                                    recipeDetail.isOnList);
 
-                               DBProvider.db.newFav(fav);
-                               setState(() {
-                        recipeDetail.setLike();
-                        
-                      });
-                        }
+                                DBProvider.db.newFav(fav);
+                                setState(() {
+                                  recipeDetail.setLike();
+                                });
+                              } else {
+                                DBProvider.db.deleteFav(recipeDetail.id);
+                                setState(() {
+                                  recipeDetail.setLike();
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Material(
+                      color: Colors.transparent,
+                      child: Center(
+                        child: Ink(
+                          decoration: const ShapeDecoration(
+                            color: LightColor.main,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.shopping_cart),
+                            color: recipeDetail.isOnList
+                                ? LightColor.red
+                                : LightColor.background,
+                            onPressed: () {
+                              setState(() {
+                                if (!recipeDetail.isOnList) {
+                                Recipe fav = new Recipe();
+                                fav.RecipeFav(
+                                    recipeDetail.id,
+                                    recipeDetail.name,
+                                    recipeDetail.readyInMinutes,
+                                    recipeDetail.image,
+                                    recipeDetail.isliked,
+                                    recipeDetail.isOnList);
 
-                        else{
-                          DBProvider.db.deleteFav(recipeDetail.id);
-                          setState(() {
-                        recipeDetail.setLike();
-                        
-                      });
-                        }
-               
-            
-            },
-          ),
-        ),
-      ),
-                     ),
-                     SizedBox(height: 10),
-                     Material(
-      color: Colors.transparent,
-      child: Center(
-        child: Ink(
-          decoration: const ShapeDecoration(
-            color: LightColor.main,
-            shape: CircleBorder(),
-          ),
-          child: IconButton(
-                    icon: Icon(Icons.shopping_cart),
-                    color: recipeDetail.isOnList ? LightColor.red : LightColor.background,
-                    onPressed: () {
-                      setState(() {
-                        recipeDetail.setList();
-                      });
-                    },
-                  ),
-        ),
-      ),
-                     ),
-                   
-                 
+                                DBProvider.db.newList(fav);
+                                setState(() {
+                                  recipeDetail.setList();
+                                });
+                              } else {
+                                DBProvider.db.deleteList(recipeDetail.id);
+                                setState(() {
+                                  recipeDetail.setList();
+                                });
+                              }
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -212,7 +222,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
       ),
     );
   }
-
 
   Widget _detailWidget() {
     return DraggableScrollableSheet(
@@ -280,28 +289,38 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
   }
 
   Widget _checkLike() {
-       WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
     return new FutureBuilder<List<Recipe>>(
-        future: DBProvider.db.getFav(widget.recipeId), //This is the method that returns your Future
-         builder: (BuildContext context, AsyncSnapshot<List<Recipe>> snapshot) {
+        future: DBProvider.db.getFav(
+            widget.recipeId), //This is the method that returns your Future
+        builder: (BuildContext context, AsyncSnapshot<List<Recipe>> snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.length != 0) {
-              
-               recipeDetail.isliked=true;
-              
+              recipeDetail.isliked = true;
+            } else {
+              recipeDetail.isliked = false;
             }
+          }
+          return Scaffold();
+        });
+  }
 
-            else {
-              recipeDetail.isliked=false;
+  Widget _checkList() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    return new FutureBuilder<List<Recipe>>(
+        future: DBProvider.db.getList(
+            widget.recipeId), //This is the method that returns your Future
+        builder: (BuildContext context, AsyncSnapshot<List<Recipe>> snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data.length != 0) {
+              recipeDetail.isOnList = true;
+            } else {
+              recipeDetail.isOnList = false;
             }
-     }
-     return Scaffold(
-       
-    );
-        }
-    );  
-    
-}
+          }
+          return Scaffold();
+        });
+  }
 
   Widget _header() {
     return Column(
@@ -310,101 +329,103 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            if(recipeDetail.preparationMinutes != null)
-            Column(children: [
-              Icon(
-                Icons.timer,
-                color: LightColor.main,
-                size: 50,
-              ),
-              TitleText(
-                text: recipeDetail.preparationMinutes.toString() + " min de préparation",
-              ),
-            ]),
-            if(recipeDetail.preparationMinutes != null)
-            SizedBox(width: 20),
-            if(recipeDetail.cookingMinutes != null)
-            Column(children: [
-              Icon(
-                Icons.hourglass_empty,
-                color: LightColor.main,
-                size: 50,
-              ),
-              TitleText(
-                text: recipeDetail.cookingMinutes.toString()+ " min de cuisson",
-              ),
-            ]),
-            if(recipeDetail.cookingMinutes == null && recipeDetail.preparationMinutes == null && recipeDetail.readyInMinutes != null)
-             Column(children: [
-              Icon(
-                Icons.timer,
-                color: LightColor.main,
-                size: 50,
-              ),
-              TitleText(
-                text: recipeDetail.servings.toString()+ " min",
-              ),
-            ]),
+            if (recipeDetail.preparationMinutes != null)
+              Column(children: [
+                Icon(
+                  Icons.timer,
+                  color: LightColor.main,
+                  size: 50,
+                ),
+                TitleText(
+                  text: recipeDetail.preparationMinutes.toString() +
+                      " min de préparation",
+                ),
+              ]),
+            if (recipeDetail.preparationMinutes != null) SizedBox(width: 20),
+            if (recipeDetail.cookingMinutes != null)
+              Column(children: [
+                Icon(
+                  Icons.hourglass_empty,
+                  color: LightColor.main,
+                  size: 50,
+                ),
+                TitleText(
+                  text: recipeDetail.cookingMinutes.toString() +
+                      " min de cuisson",
+                ),
+              ]),
+            if (recipeDetail.cookingMinutes == null &&
+                recipeDetail.preparationMinutes == null &&
+                recipeDetail.readyInMinutes != null)
+              Column(children: [
+                Icon(
+                  Icons.timer,
+                  color: LightColor.main,
+                  size: 50,
+                ),
+                TitleText(
+                  text: recipeDetail.servings.toString() + " min",
+                ),
+              ]),
           ],
         ),
         SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            if(recipeDetail.vegan)
-            Column(children: [
-              Icon(
-                Icons.spa,
-                color: LightColor.main,
-                size: 30,
-              ),
-              TitleText(
-                text: "Vegan",
-              ),
-            ]),
-           // SizedBox(width: 20),
-            if(recipeDetail.vegetarian)
-            Column(children: [
-              Icon(
-                Icons.nature,
-                color: LightColor.main,
-                size: 30,
-              ),
-              TitleText(
-                text: "Végé",
-              ),
-            ]),
-          //  SizedBox(width: 20),
-          if(recipeDetail.veryHealthy)
-            Column(children: [
-              Icon(
-                Icons.accessibility_new,
-                color: LightColor.main,
-                size: 30,
-              ),
-              TitleText(
-                text: "Healthy",
-              ),
-            ]),
-          //   SizedBox(width: 20),
-           if(recipeDetail.glutenFree)
-            Column(children: [
-              Icon(
-                Icons.not_interested,
-                color: LightColor.main,
-                size: 30,
-              ),
-              TitleText(
-                text: "Sans gluten",
-              ),
-            ]),
-            
+            if (recipeDetail.vegan)
+              Column(children: [
+                Icon(
+                  Icons.spa,
+                  color: LightColor.main,
+                  size: 30,
+                ),
+                TitleText(
+                  text: "Vegan",
+                ),
+              ]),
+            // SizedBox(width: 20),
+            if (recipeDetail.vegetarian)
+              Column(children: [
+                Icon(
+                  Icons.nature,
+                  color: LightColor.main,
+                  size: 30,
+                ),
+                TitleText(
+                  text: "Végé",
+                ),
+              ]),
+            //  SizedBox(width: 20),
+            if (recipeDetail.veryHealthy)
+              Column(children: [
+                Icon(
+                  Icons.accessibility_new,
+                  color: LightColor.main,
+                  size: 30,
+                ),
+                TitleText(
+                  text: "Healthy",
+                ),
+              ]),
+            //   SizedBox(width: 20),
+            if (recipeDetail.glutenFree)
+              Column(children: [
+                Icon(
+                  Icons.not_interested,
+                  color: LightColor.main,
+                  size: 30,
+                ),
+                TitleText(
+                  text: "Sans gluten",
+                ),
+              ]),
           ],
         ),
       ],
     );
   }
-  
+
   Widget _ingredients() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,19 +438,16 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-     
-
-     // Modifier nb personnes
-              IconButton(
-                    icon: Icon(Icons.remove_circle_outline,size: 50),
-                    color: LightColor.main,
-                    onPressed: () {
-                      setState(() {
-                        recipeDetail.removeServings();
-                      });
-                     
-                    },
-                  ),
+            // Modifier nb personnes
+            IconButton(
+              icon: Icon(Icons.remove_circle_outline, size: 50),
+              color: LightColor.main,
+              onPressed: () {
+                setState(() {
+                  recipeDetail.removeServings();
+                });
+              },
+            ),
 
             Column(children: [
               Icon(
@@ -441,16 +459,15 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                 text: recipeDetail.servings.toString(),
               ),
             ]),
-             IconButton(
-                    icon: Icon(Icons.add_circle_outline,size: 50),
-                    color: LightColor.main,
-                    onPressed: () {
-                  setState(() {
-                        recipeDetail.addServings();
-                      });
-                    },
-                  ),
-   
+            IconButton(
+              icon: Icon(Icons.add_circle_outline, size: 50),
+              color: LightColor.main,
+              onPressed: () {
+                setState(() {
+                  recipeDetail.addServings();
+                });
+              },
+            ),
           ],
         ),
         SizedBox(height: 20),
@@ -465,9 +482,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
               ),
               SizedBox(width: 20),
               Expanded(
-      child:
-              Text(item.name.capitalize() + " ",
-                  style: GoogleFonts.muli(fontSize: 17)),
+                child: Text(item.name.capitalize() + " ",
+                    style: GoogleFonts.muli(fontSize: 17)),
               ),
               TitleText(
                 text: "x " +
@@ -513,9 +529,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
     );
   }
 
-
-
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -541,9 +554,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                 child: Stack(
                   children: <Widget>[
                     _checkLike(),
+                    _checkList(),
                     Column(
                       children: <Widget>[
-                        
                         //   _appBar(),
                         _recipeImage(),
                         // _categoryWidget(),
@@ -557,9 +570,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
     );
   }
 
-
-
-    // Widget _appBar() {
+  // Widget _appBar() {
   //   return Container(
   //     padding: AppTheme.padding,
   //     child: Row(
@@ -773,6 +784,5 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
   //         color: Theme.of(context).floatingActionButtonTheme.backgroundColor),
   //   );
   // }
-
 
 }

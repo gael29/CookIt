@@ -33,6 +33,14 @@ class DBProvider {
           "isLiked INTEGER,"
           "isOnList INTEGER"
           ")");
+          await db.execute("CREATE TABLE List ("
+          "id INTEGER PRIMARY KEY,"
+          "name TEXT,"
+          "readyInMinutes INTEGER,"
+          "image TEXT,"
+          "isLiked INTEGER,"
+          "isOnList INTEGER"
+          ")");
     });
   }
 
@@ -50,17 +58,32 @@ class DBProvider {
     return raw;
   }
 
-  // getAllFav() async {
-  //   final db = await database;
-  //   var res = await db.rawQuery("SELECT * FROM Fav");
-  //   List<Recipe> list =
-  //       res.isNotEmpty ? res.toList().map((c) => Recipe.fromMap(c)) : null;
-  //   return list;
-  // }
+  newList(Recipe newRecipe) async {
+    final db = await database;
+    int isLiked = newRecipe.isLiked ? 1 : 0;
+    int isOnList = newRecipe.isOnList ? 1 : 0;
+    //await db.execute("DROP TABLE IF EXISTS Fav");
+        //insert to the table using the new id
+    
+    var raw = await db.rawInsert(
+        "INSERT Into List (id,name,readyInMinutes,image,isLiked,isOnList)"
+        " VALUES (?,?,?,?,?,?)",
+        [newRecipe.id, newRecipe.name,newRecipe.readyInMinutes,newRecipe.image,isLiked,isOnList]);
+    return raw;
+  }
+
 
   Future<List<Recipe>> getAllFav() async {
     final db = await database;
     var res = await db.query("Fav");
+    List<Recipe> list =
+        res.isNotEmpty ? res.map((c) => Recipe.fromMap(c)).toList() : [];
+    return list;
+  }
+
+   Future<List<Recipe>> getAllList() async {
+    final db = await database;
+    var res = await db.query("List");
     List<Recipe> list =
         res.isNotEmpty ? res.map((c) => Recipe.fromMap(c)).toList() : [];
     return list;
@@ -71,9 +94,22 @@ class DBProvider {
     return db.delete("Fav", where: "id = ?", whereArgs: [id]);
   }
 
+  deleteList(int id) async {
+    final db = await database;
+    return db.delete("List", where: "id = ?", whereArgs: [id]);
+  }
+
 Future<List<Recipe>> getFav(int id) async {
     final db = await database;
     var res = await db.query("Fav", where: "id = ?", whereArgs: [id]);
+    List<Recipe> list =
+        res.isNotEmpty ? res.map((c) => Recipe.fromMap(c)).toList() : [];
+    return list;
+  }
+
+  Future<List<Recipe>> getList(int id) async {
+    final db = await database;
+    var res = await db.query("List", where: "id = ?", whereArgs: [id]);
     List<Recipe> list =
         res.isNotEmpty ? res.map((c) => Recipe.fromMap(c)).toList() : [];
     return list;

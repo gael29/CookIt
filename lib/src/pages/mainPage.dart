@@ -9,6 +9,8 @@ import 'package:flutter_ecommerce_app/src/wigets/prduct_icon.dart';
 import 'package:flutter_ecommerce_app/src/wigets/product_card.dart';
 import 'package:flutter_ecommerce_app/src/wigets/title_text.dart';
 
+import 'listPage.dart';
+
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);
 
@@ -70,64 +72,107 @@ class _MainPageState extends State<MainPage> {
   Widget _title() {
     return Container(
         margin: AppTheme.padding,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                if (isHomePageSelected)
-                TitleText(
-                  text: 'Nos',
-                  fontSize: 27,
-                  fontWeight: FontWeight.w400,
-                ),
-                if (isHomePageSelected)
-                TitleText(
-                  text: 'Recettes',
-                  fontSize: 27,
-                  fontWeight: FontWeight.w700,
-                ),
-                 if (isRecipeSelected)
-                TitleText(
-                  text: 'Recettes',
-                  fontSize: 27,
-                  fontWeight: FontWeight.w400,
-                ),
-                if (isRecipeSelected)
-                TitleText(
-                  text: 'ajoutées',
-                  fontSize: 27,
-                  fontWeight: FontWeight.w700,
-                ),
-                 if (isListSelected)
-                TitleText(
-                  text: 'Votre liste',
-                  fontSize: 27,
-                  fontWeight: FontWeight.w400,
-                ),
-                if (isListSelected)
-                TitleText(
-                  text: 'de courses',
-                  fontSize: 27,
-                  fontWeight: FontWeight.w700,
-                ),
-                 if (isFavSelected)
-                TitleText(
-                  text: 'Vos',
-                  fontSize: 27,
-                  fontWeight: FontWeight.w400,
-                ),
-                if (isFavSelected)
-                TitleText(
-                  text: 'Favoris',
-                  fontSize: 27,
-                  fontWeight: FontWeight.w700,
-                ),
-              ],
-            ),
-            Spacer(),
-            
+            if (isHomePageSelected)
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TitleText(
+                      text: 'Nos',
+                      fontSize: 27,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    TitleText(
+                      text: 'Recettes',
+                      fontSize: 27,
+                      fontWeight: FontWeight.w700,
+                    )
+                  ]),
+            if (isFavSelected)
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TitleText(
+                      text: 'Vos',
+                      fontSize: 27,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    TitleText(
+                      text: 'Favoris',
+                      fontSize: 27,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    SizedBox(height: 30),
+                    Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.favorite,
+                          color: LightColor.main,
+                          size: 40,
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: TitleText(
+                            text: 'Retrouvez la liste de vos coups de coeur',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 30)
+                  ]),
+            if (isRecipeSelected)
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TitleText(
+                      text: 'Vos',
+                      fontSize: 27,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    TitleText(
+                      text: 'Recettes prévues',
+                      fontSize: 27,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    SizedBox(height: 30),
+                    Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.local_dining,
+                          color: LightColor.main,
+                          size: 40,
+                        ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: TitleText(
+                            text: 'Retrouvez la liste de vos recettes à faire.\nVotre liste de course sera automatiquement générée.',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 30)
+                  ]),
+            if (isListSelected)
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TitleText(
+                      text: 'Votre',
+                      fontSize: 27,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    TitleText(
+                      text: 'Liste de course',
+                      fontSize: 27,
+                      fontWeight: FontWeight.w700,
+                    )
+                  ]),
           ],
         ));
   }
@@ -140,27 +185,21 @@ class _MainPageState extends State<MainPage> {
         isListSelected = false;
         isFavSelected = false;
       });
-    } 
-    
-    else if (index == 1) {
+    } else if (index == 1) {
       setState(() {
         isHomePageSelected = false;
         isRecipeSelected = false;
         isListSelected = false;
         isFavSelected = true;
       });
-    }
-
-     else if (index == 2) {
+    } else if (index == 2) {
       setState(() {
         isHomePageSelected = false;
         isRecipeSelected = true;
         isListSelected = false;
         isFavSelected = false;
       });
-    }
-
-     else if (index == 3) {
+    } else if (index == 3) {
       setState(() {
         isHomePageSelected = false;
         isRecipeSelected = false;
@@ -171,19 +210,24 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget _displayPage() {
-  if (isHomePageSelected) {
-    return MyHomePage();
+    if (isHomePageSelected) {
+      return MyHomePage();
+    } else if (isFavSelected)
+      return Align(
+        alignment: Alignment.topCenter,
+        child: FavPage(),
+      );
+    else if (isRecipeSelected)
+      return Align(
+        alignment: Alignment.topCenter,
+        child: ListPage(),
+      );
+    else
+      return Align(
+        alignment: Alignment.topCenter,
+        child: MyHomePage(),
+      );
   }
-  else if (isFavSelected)
-  return Align(
-                              alignment: Alignment.topCenter,
-                              child:FavPage(),
-                            );
-  else return Align(
-                              alignment: Alignment.topCenter,
-                              child:FavPage(),
-                            );
-}
 
   @override
   Widget build(BuildContext context) {
@@ -210,12 +254,13 @@ class _MainPageState extends State<MainPage> {
                     _appBar(),
                     _title(),
                     Expanded(
-                        child:AnimatedSwitcher(
-                          duration: Duration(milliseconds: 300),
-                          switchInCurve: Curves.easeInToLinear,
-                          switchOutCurve: Curves.easeOutBack,
-                          child:  _displayPage()
-                        ))
+                        child: AnimatedSwitcher(
+                            duration: Duration(milliseconds: 300),
+                            switchInCurve: Curves.easeInToLinear,
+                            switchOutCurve: Curves.easeOutBack,
+                            child: _displayPage())),
+                            SizedBox(height: 40),
+
                   ],
                 ),
               ),
