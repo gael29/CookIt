@@ -77,6 +77,13 @@ class Detail{
     }
   }
 
+  void setServings(int oldServ, int newServ){
+
+    for (var ind in this.ingredients)
+    ind.setAmount(oldServ,newServ);
+
+  }
+
   void setLike(){
     this.isliked = !this.isliked;
   }

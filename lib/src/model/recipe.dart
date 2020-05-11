@@ -8,6 +8,7 @@ class Recipe{
   bool isLiked ;
   bool isOnList ;
   bool isChecked;
+  int servings;
 
   Recipe clientFromJson(String str) {
   final jsonData = json.decode(str);
@@ -19,7 +20,7 @@ String clientToJson(Recipe data) {
   return json.encode(dyn);
 }
 
-  Recipe({this.id,this.name, this.readyInMinutes,this.image,this.isLiked, this.isOnList,this.isChecked=false});
+  Recipe({this.id,this.name, this.readyInMinutes,this.image,this.isLiked, this.isOnList,this.isChecked=false,this.servings});
 
   RecipeFav(int id,String name,int readyInMinutes,String image, bool isLiked,bool isOnList ){
     this.id = id;
@@ -28,6 +29,15 @@ String clientToJson(Recipe data) {
     this.image = image;
     this.isLiked = isLiked;
     this.isOnList = isOnList;
+  }
+  RecipeList(int id,String name,int readyInMinutes,String image, bool isLiked,bool isOnList,int servings ){
+    this.id = id;
+    this.name = name;
+    this.readyInMinutes = readyInMinutes;
+    this.image = image;
+    this.isLiked = isLiked;
+    this.isOnList = isOnList;
+    this.servings = servings;
   }
 
   
@@ -75,6 +85,7 @@ factory Recipe.fromMap(Map<String, dynamic> json) {
         image: json["image"],
         isLiked: liked,
         isOnList: listed,
+        servings: json["servings"]
       );
 }
         

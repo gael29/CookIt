@@ -96,12 +96,7 @@ class _ListPageState extends State<ListPage> {
         onTap: (){
             Navigator.of(context).pushNamed('/detail', arguments: model.id);
         },
-        child: 
-                      TitleText(
-                        text: model.readyInMinutes.toString()+" min de préparation",
-                        fontSize: 14,
-                        color: LightColor.main,
-                      )
+        child: _isPlural(model)
                       ),
                     ],
                   ),
@@ -125,6 +120,22 @@ class _ListPageState extends State<ListPage> {
         ],
       ),
     );
+  }
+
+  
+  Widget _isPlural(Recipe recipe) {
+  if (recipe.servings>1) {
+    return TitleText(
+                        text: recipe.servings.toString()+" personnes",
+                        fontSize: 14,
+                        color: LightColor.main,
+                      );
+  }
+  else return TitleText(
+                        text: recipe.servings.toString()+" personne",
+                        fontSize: 14,
+                        color: LightColor.main,
+                      );
   }
 
   Widget _price() {

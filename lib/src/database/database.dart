@@ -39,7 +39,8 @@ class DBProvider {
           "readyInMinutes INTEGER,"
           "image TEXT,"
           "isLiked INTEGER,"
-          "isOnList INTEGER"
+          "isOnList INTEGER,"
+          "servings INTEGER"
           ")");
     });
   }
@@ -64,11 +65,12 @@ class DBProvider {
     int isOnList = newRecipe.isOnList ? 1 : 0;
     //await db.execute("DROP TABLE IF EXISTS Fav");
         //insert to the table using the new id
+        print(newRecipe.servings);
     
     var raw = await db.rawInsert(
-        "INSERT Into List (id,name,readyInMinutes,image,isLiked,isOnList)"
-        " VALUES (?,?,?,?,?,?)",
-        [newRecipe.id, newRecipe.name,newRecipe.readyInMinutes,newRecipe.image,isLiked,isOnList]);
+        "INSERT Into List (id,name,readyInMinutes,image,isLiked,isOnList,servings)"
+        " VALUES (?,?,?,?,?,?,?)",
+        [newRecipe.id,newRecipe.name,newRecipe.readyInMinutes,newRecipe.image,isLiked,isOnList,newRecipe.servings]);
     return raw;
   }
 
@@ -113,6 +115,15 @@ Future<List<Recipe>> getFav(int id) async {
     List<Recipe> list =
         res.isNotEmpty ? res.map((c) => Recipe.fromMap(c)).toList() : [];
     return list;
+  }
+
+   updateServingsList(int id, int servings) async {
+    final db = await database;
+        var res = await db.rawUpdate('UPDATE List SET servings = ? WHERE id = ?',[servings,id]);
+    //     int count = await database.rawUpdate(
+    // 'UPDATE Test SET name = ?, value = ? WHERE name = ?',
+    // ['updated name', '9876', 'some name']);
+    return res;
   }
 
 

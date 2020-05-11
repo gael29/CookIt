@@ -189,13 +189,15 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                               setState(() {
                                 if (!recipeDetail.isOnList) {
                                 Recipe fav = new Recipe();
-                                fav.RecipeFav(
+                                fav.RecipeList(
                                     recipeDetail.id,
                                     recipeDetail.name,
                                     recipeDetail.readyInMinutes,
                                     recipeDetail.image,
                                     recipeDetail.isliked,
-                                    recipeDetail.isOnList);
+                                    recipeDetail.isOnList,
+                                    recipeDetail.servings);
+                                   
 
                                 DBProvider.db.newList(fav);
                                 setState(() {
@@ -314,6 +316,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
           if (snapshot.hasData) {
             if (snapshot.data.length != 0) {
               recipeDetail.isOnList = true;
+              int serv = recipeDetail.servings;
+              recipeDetail.servings = snapshot.data[0].servings;
+              recipeDetail.setServings(serv, recipeDetail.servings);
             } else {
               recipeDetail.isOnList = false;
             }
@@ -364,7 +369,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                   size: 50,
                 ),
                 TitleText(
-                  text: recipeDetail.servings.toString() + " min",
+                  text: recipeDetail.readyInMinutes.toString() + " min",
                 ),
               ]),
           ],
@@ -445,6 +450,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
               onPressed: () {
                 setState(() {
                   recipeDetail.removeServings();
+                  if(recipeDetail.isOnList)
+                  DBProvider.db.updateServingsList(recipeDetail.id,recipeDetail.servings);
                 });
               },
             ),
@@ -465,6 +472,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
               onPressed: () {
                 setState(() {
                   recipeDetail.addServings();
+                  if(recipeDetail.isOnList)
+                  DBProvider.db.updateServingsList(recipeDetail.id,recipeDetail.servings);
                 });
               },
             ),
