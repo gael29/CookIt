@@ -55,7 +55,6 @@ class _SearchState extends State<Search> {
                       return null;
                     },
                     onFieldSubmitted: (text){
-                print("First text field: $text");
                 widget.callback(text);
               },
                   ),

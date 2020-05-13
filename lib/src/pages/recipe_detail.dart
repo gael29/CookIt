@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ecommerce_app/src/config/SizeConfig.dart';
 import 'package:flutter_ecommerce_app/src/database/database.dart';
 import 'package:flutter_ecommerce_app/src/model/category.dart';
 import 'package:flutter_ecommerce_app/src/model/data.dart';
@@ -111,7 +112,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
               child: Padding(
                 padding: const EdgeInsets.only(top: 10, left: 10),
                 child: CircleAvatar(
-                  radius: 30,
+                  radius: SizeConfig.safeBlockVertical*4,
                   backgroundColor: LightColor.main,
                   child: IconButton(
                     icon: Icon(Icons.arrow_back),
@@ -274,9 +275,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                   height: 20,
                 ),
                 //   _availableSize(),
-                SizedBox(
-                  height: 20,
-                ),
+          
                 //     _availableColor(),
                 _header(),
                 SizedBox(
@@ -344,11 +343,15 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                 Icon(
                   Icons.timer,
                   color: LightColor.main,
-                  size: 50,
+                  size: SizeConfig.safeBlockVertical*7,
                 ),
                 TitleText(
-                  text: recipeDetail.preparationMinutes.toString() +
-                      " min de préparation",
+                  text: "Preparation :",
+                      fontSize: SizeConfig.safeBlockVertical*2.5,
+                ),
+                 TitleText(
+                  text: recipeDetail.preparationMinutes.toString()+" min",
+                      fontSize: SizeConfig.safeBlockVertical*2.5,
                 ),
               ]),
             if (recipeDetail.preparationMinutes != null) SizedBox(width: 20),
@@ -357,12 +360,17 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                 Icon(
                   Icons.hourglass_empty,
                   color: LightColor.main,
-                  size: 50,
+                  size: SizeConfig.safeBlockVertical*7,
+                ),
+                TitleText(
+                  text: "Cuisson :",
+                   fontSize: SizeConfig.safeBlockVertical*2.5,
                 ),
                 TitleText(
                   text: recipeDetail.cookingMinutes.toString() +
-                      " min de cuisson",
-                ),
+                      " min",
+                       fontSize: SizeConfig.safeBlockVertical*2.5,
+                )
               ]),
             if (recipeDetail.cookingMinutes == null &&
                 recipeDetail.preparationMinutes == null &&
@@ -372,6 +380,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                   Icons.timer,
                   color: LightColor.main,
                   size: 50,
+                ),
+                TitleText(
+                  text: "Prêt en :",
                 ),
                 TitleText(
                   text: recipeDetail.readyInMinutes.toString() + " min",
@@ -392,6 +403,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                 ),
                 TitleText(
                   text: "Vegan",
+                  fontSize: SizeConfig.safeBlockVertical*2.5
                 ),
               ]),
             // SizedBox(width: 20),
@@ -404,6 +416,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                 ),
                 TitleText(
                   text: "Végé",
+                  fontSize: SizeConfig.safeBlockVertical*2.5
                 ),
               ]),
             //  SizedBox(width: 20),
@@ -416,6 +429,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                 ),
                 TitleText(
                   text: "Healthy",
+                  fontSize: SizeConfig.safeBlockVertical*2.5
                 ),
               ]),
             //   SizedBox(width: 20),
@@ -428,6 +442,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                 ),
                 TitleText(
                   text: "Sans gluten",
+                  fontSize: SizeConfig.safeBlockVertical*2.5
                 ),
               ]),
           ],
@@ -450,7 +465,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
           children: [
             // Modifier nb personnes
             IconButton(
-              icon: Icon(Icons.remove_circle_outline, size: 50),
+              icon: Icon(Icons.remove_circle_outline, size: SizeConfig.safeBlockVertical*7),
               color: LightColor.main,
               onPressed: () {
                 setState(() {
@@ -470,14 +485,14 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
               Icon(
                 Icons.people,
                 color: LightColor.main,
-                size: 50,
+                size: SizeConfig.safeBlockVertical*7,
               ),
               TitleText(
                 text: recipeDetail.servings.toString(),
               ),
             ]),
             IconButton(
-              icon: Icon(Icons.add_circle_outline, size: 50),
+              icon: Icon(Icons.add_circle_outline, size: SizeConfig.safeBlockVertical*7),
               color: LightColor.main,
               onPressed: () {
                 
@@ -557,6 +572,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       //floatingActionButton: _floatingButton(),
       body: SafeArea(

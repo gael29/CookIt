@@ -30,14 +30,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
                 Ingredient item = snapshot.data[index];
-                return Dismissible(
-                  direction: DismissDirection.endToStart,
-                  key: UniqueKey(),
-                  background: Container(color: LightColor.red),
-                  onDismissed: (direction) {
-                    // DBProvider.db.deleteFav(item.id);
-                  },
-                  child: // _item(item)
+                return // _item(item)
                       SingleChildScrollView(
                     child: Column(
                       children: <Widget>[ GestureDetector(
@@ -56,7 +49,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                         ),
                       ],
                     ),
-                  ),
+                  
                 );
               },
             );

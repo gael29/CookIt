@@ -16,6 +16,7 @@ import 'package:flutter_ecommerce_app/src/wigets/title_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_ecommerce_app/src/config/SizeConfig.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -122,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
               childAspectRatio: 4/3,
               mainAxisSpacing: 30,
               crossAxisSpacing: 20),
-         padding: EdgeInsets.only(left: 20 ,right: 20, bottom:100),
+         padding: EdgeInsets.only(left: 20 ,right: 20, bottom:SizeConfig.safeBlockVertical*30),
           scrollDirection: Axis.vertical,
           children:  rList
               .map((recipe) => RecipeCard(
@@ -150,8 +151,8 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               Image.asset(
                 'assets/recipe.png',
-                height: 400,
-    width: 400,
+                height: SizeConfig.safeBlockVertical*40,
+    width: SizeConfig.safeBlockHorizontal*40,
               ),
               TitleText(
                   text: "Découvrez de nouvelles recettes !", 
@@ -166,14 +167,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return  Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _search(research, callback),
-          _recipeWidget(),
           _background(),
+          Expanded(
+      child: 
+          _recipeWidget()
+          ),
+          
          // _test(),
           ],
+      
       );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ecommerce_app/src/config/SizeConfig.dart';
 import 'package:flutter_ecommerce_app/src/model/data.dart';
 import 'package:flutter_ecommerce_app/src/pages/home_page.dart';
 import 'package:flutter_ecommerce_app/src/pages/favPage.dart';
@@ -82,12 +83,12 @@ class _MainPageState extends State<MainPage> {
                   children: <Widget>[
                     TitleText(
                       text: 'Nos',
-                      fontSize: 27,
+                      fontSize: SizeConfig.safeBlockHorizontal*7,
                       fontWeight: FontWeight.w400,
                     ),
                     TitleText(
                       text: 'Recettes',
-                      fontSize: 27,
+                      fontSize: SizeConfig.safeBlockHorizontal*6,
                       fontWeight: FontWeight.w700,
                     )
                   ]),
@@ -97,12 +98,12 @@ class _MainPageState extends State<MainPage> {
                   children: <Widget>[
                     TitleText(
                       text: 'Vos',
-                      fontSize: 27,
+                      fontSize: SizeConfig.safeBlockHorizontal*7,
                       fontWeight: FontWeight.w400,
                     ),
                     TitleText(
                       text: 'Favoris',
-                      fontSize: 27,
+                      fontSize: SizeConfig.safeBlockHorizontal*6,
                       fontWeight: FontWeight.w700,
                     ),
                     SizedBox(height: 30),
@@ -117,7 +118,7 @@ class _MainPageState extends State<MainPage> {
                         Expanded(
                           child: TitleText(
                             text: 'Retrouvez la liste de vos coups de coeur',
-                            fontSize: 20,
+                            fontSize: SizeConfig.safeBlockHorizontal*5,
                             fontWeight: FontWeight.w400,
                           ),
                         )
@@ -131,12 +132,12 @@ class _MainPageState extends State<MainPage> {
                   children: <Widget>[
                     TitleText(
                       text: 'Vos',
-                      fontSize: 27,
+                      fontSize: SizeConfig.safeBlockHorizontal*7,
                       fontWeight: FontWeight.w400,
                     ),
                     TitleText(
                       text: 'Recettes prévues',
-                      fontSize: 27,
+                      fontSize: SizeConfig.safeBlockHorizontal*6,
                       fontWeight: FontWeight.w700,
                     ),
                     SizedBox(height: 30),
@@ -151,7 +152,7 @@ class _MainPageState extends State<MainPage> {
                         Expanded(
                           child: TitleText(
                             text: 'Retrouvez la liste de vos recettes à faire.\nVotre liste de course sera automatiquement générée.',
-                            fontSize: 20,
+                            fontSize: SizeConfig.safeBlockHorizontal*5,
                             fontWeight: FontWeight.w400,
                           ),
                         )
@@ -165,12 +166,12 @@ class _MainPageState extends State<MainPage> {
                   children: <Widget>[
                     TitleText(
                       text: 'Votre',
-                      fontSize: 27,
+                      fontSize: SizeConfig.safeBlockHorizontal*7,
                       fontWeight: FontWeight.w400,
                     ),
                     TitleText(
                       text: 'Liste de course',
-                      fontSize: 27,
+                      fontSize: SizeConfig.safeBlockHorizontal*6,
                       fontWeight: FontWeight.w700,
                     )
                   ]),
@@ -237,6 +238,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       body: SafeArea(
         child: Stack(

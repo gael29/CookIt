@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ecommerce_app/src/config/SizeConfig.dart';
 import 'package:flutter_ecommerce_app/src/themes/light_color.dart';
 import 'package:flutter_ecommerce_app/src/wigets/BottomNavigationBar/bottom_curved_Painter.dart';
 
@@ -140,11 +141,12 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar>
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     final appSize = MediaQuery.of(context).size;
-    final height = 60.0;
+    final height = SizeConfig.safeBlockVertical*10;
     return Container(
       width: appSize.width,
-      height: 60,
+      height: SizeConfig.safeBlockVertical*10,
       child: Stack(
         children: [
           Positioned(
