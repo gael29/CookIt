@@ -31,27 +31,32 @@ class _MainPageState extends State<MainPage> {
     return Container(
       padding: AppTheme.padding,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          RotatedBox(
-            quarterTurns: 4,
-            child: _icon(Icons.sort, color: Colors.black54),
-          ),
-          ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(13)),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      color: Color(0xfff8f8f8),
-                      blurRadius: 10,
-                      spreadRadius: 10),
-                ],
-              ),
-              child: Image.asset("assets/user.png"),
-            ),
-          )
+          // RotatedBox(
+          //   quarterTurns: 4,
+          //   child: _icon(Icons.sort, color: Colors.black54),
+          // ),
+          Image.asset(
+                        'assets/logo.png',
+                   
+            width: SizeConfig.safeBlockHorizontal*40,
+                      ),
+          // ClipRRect(
+          //   borderRadius: BorderRadius.all(Radius.circular(13)),
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       color: Theme.of(context).backgroundColor,
+          //       boxShadow: <BoxShadow>[
+          //         BoxShadow(
+          //             color: Color(0xfff8f8f8),
+          //             blurRadius: 10,
+          //             spreadRadius: 10),
+          //       ],
+          //     ),
+          //     child: Image.asset("assets/user.png"),
+          //   ),
+          // )
         ],
       ),
     );

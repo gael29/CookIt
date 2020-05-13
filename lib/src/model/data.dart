@@ -43,6 +43,34 @@ class AppData {
         isliked: false,
         image: 'assets/shoe_tilt_2.png',
         category: "Trending Now"),
+            Product(
+        id:2,
+        name: 'Nike Air Max 97',
+        price: 220.00,
+        isliked: false,
+        image: 'assets/shoe_tilt_2.png',
+        category: "Trending Now"),
+            Product(
+        id:2,
+        name: 'Nike Air Max 97',
+        price: 220.00,
+        isliked: false,
+        image: 'assets/shoe_tilt_2.png',
+        category: "Trending Now"),
+            Product(
+        id:2,
+        name: 'Nike Air Max 97',
+        price: 220.00,
+        isliked: false,
+        image: 'assets/shoe_tilt_2.png',
+        category: "Trending Now"),
+            Product(
+        id:2,
+        name: 'Nike Air Max 97',
+        price: 220.00,
+        isliked: false,
+        image: 'assets/shoe_tilt_2.png',
+        category: "Trending Now"),
   ];
   static List<Product> cartList = [
     Product(
