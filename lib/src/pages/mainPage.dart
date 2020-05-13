@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_app/src/model/data.dart';
 import 'package:flutter_ecommerce_app/src/pages/home_page.dart';
 import 'package:flutter_ecommerce_app/src/pages/favPage.dart';
+import 'package:flutter_ecommerce_app/src/pages/shoppingListPage.dart';
 import 'package:flutter_ecommerce_app/src/themes/light_color.dart';
 import 'package:flutter_ecommerce_app/src/themes/theme.dart';
 import 'package:flutter_ecommerce_app/src/wigets/BottomNavigationBar/bootom_navigation_bar.dart';
@@ -221,6 +222,11 @@ class _MainPageState extends State<MainPage> {
       return Align(
         alignment: Alignment.topCenter,
         child: ListPage(),
+      );
+      else if (isListSelected)
+      return Align(
+        alignment: Alignment.topCenter,
+        child: ShoppingListPage(),
       );
     else
       return Align(

@@ -1,48 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_app/src/database/database.dart';
 import 'package:flutter_ecommerce_app/src/model/data.dart';
+import 'package:flutter_ecommerce_app/src/model/ingredient.dart';
 import 'package:flutter_ecommerce_app/src/model/product.dart';
 import 'package:flutter_ecommerce_app/src/model/recipe.dart';
 import 'package:flutter_ecommerce_app/src/themes/light_color.dart';
 import 'package:flutter_ecommerce_app/src/themes/theme.dart';
 import 'package:flutter_ecommerce_app/src/wigets/title_text.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_ecommerce_app/src/extensions/string_extension.dart';
 
-class ListPage extends StatefulWidget {
-  ListPage({Key key, this.title}) : super(key: key);
+class ShoppingListPage extends StatefulWidget {
+  ShoppingListPage({Key key, this.title}) : super(key: key);
   final String title;
-    @override
-  _ListPageState createState() => _ListPageState();
+  @override
+  _ShoppingListPageState createState() => _ShoppingListPageState();
 }
-class _ListPageState extends State<ListPage> {
 
-   @override
+class _ShoppingListPageState extends State<ShoppingListPage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<Recipe>>(
-        future: DBProvider.db.getAllList(),
-        builder: (BuildContext context, AsyncSnapshot<List<Recipe>> snapshot) {
+      body: FutureBuilder<List<Ingredient>>(
+        future: DBProvider.db.getAllIngredients(),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<Ingredient>> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
-                Recipe item = snapshot.data[index];
+                Ingredient item = snapshot.data[index];
                 return Dismissible(
                   direction: DismissDirection.endToStart,
                   key: UniqueKey(),
                   background: Container(color: LightColor.red),
                   onDismissed: (direction) {
-                    DBProvider.db.deleteList(item.id);
-                    DBProvider.db.deleteIngredient(item.id);
+                    // DBProvider.db.deleteFav(item.id);
                   },
-                   child:// _item(item)
-                    SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            _item(item),
-          ],
-        ),
-      ),
+                  child: // _item(item)
+                      SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[ GestureDetector(
+        onTap: (){
+          setState(() {
+           // item.setChecked();
+             if(item.isChecked)
+          DBProvider.db.updateListChecked(item.name, 0);
+          else 
+          DBProvider.db.updateListChecked(item.name, 1);
+          });
+         
+        },
+        child: 
+                        _item(item)
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             );
@@ -59,85 +73,74 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-
-  Widget _item(Recipe model) {
+  Widget _item(Ingredient model) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      height: 100,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    
+      height: 85,
+
+      child: Container(
+        
+      decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(30),
+    color: model.isChecked
+                                ? LightColor.main
+                                : Colors.transparent,
+  ),
       child: Row(
         children: <Widget>[
-          GestureDetector(
-        onTap: (){
-           Navigator.of(context).pushNamed('/detail', arguments: model.id);
-        },
-        child: 
-          CircleAvatar(
-                      radius: 40,
-                      backgroundColor: LightColor.main,
-                      child: CircleAvatar(
-                        radius: 37.0,
-                        backgroundImage: NetworkImage(model.image),
-                        backgroundColor: Colors.transparent,
-                      ),
-           ), ),
+          Container(
+             margin: EdgeInsets.only(left:10),
+            child: 
+          Image(
+              image: NetworkImage(model.image),
+              height: 40,
+              width: 40,
+            ),
+          ),
+          
+          
           Expanded(
               child: ListTile(
-                  title: GestureDetector(
-        onTap: (){
-           Navigator.of(context).pushNamed('/detail', arguments: model.id);
-        },
-        child: TitleText(
-                    text: model.name,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                   ) ),
+                  title: 
+                        TitleText(
+                        text: model.name.capitalize(),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                  
                   subtitle: Row(
                     children: <Widget>[
-                      GestureDetector(
-        onTap: (){
-            Navigator.of(context).pushNamed('/detail', arguments: model.id);
-        },
-        child: _isPlural(model)
-                      ),
+                      TitleText(
+                            text: model.amount.toStringAsFixed(2)
+                        .toString()
+                        .replaceAll(RegExp(r'.00'), '')+" "+model.unit,
+                            fontSize: 16,
+                            color: model.isChecked
+                                ? LightColor.background
+                                : LightColor.main,
+                          )
                     ],
                   ),
                   trailing: Container(
-                    width: 35,
-                    height: 35,
-                    alignment: Alignment.center,
-                    child: 
-                IconButton(
-                    icon: Icon(Icons.delete_outline),
-                    color: LightColor.main,
-                    onPressed: () {
-                      setState(() {
-                        DBProvider.db.deleteList(model.id);
-                        DBProvider.db.deleteIngredient(model.id);
-                      });
-              
-                    },
-                  )
-                
-                  )))
+                      width: 35,
+                      height: 35,
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.check,
+                        color: model.isChecked
+                                ? LightColor.background
+                                : Colors.transparent,
+                        size:35
+                      )
+                      )
+                      )
+                      )
         ],
       ),
+      )
+      
     );
-  }
-
-  
-  Widget _isPlural(Recipe recipe) {
-  if (recipe.servings>1) {
-    return TitleText(
-                        text: recipe.servings.toString()+" personnes",
-                        fontSize: 14,
-                        color: LightColor.main,
-                      );
-  }
-  else return TitleText(
-                        text: recipe.servings.toString()+" personne",
-                        fontSize: 14,
-                        color: LightColor.main,
-                      );
   }
 
   Widget _price() {

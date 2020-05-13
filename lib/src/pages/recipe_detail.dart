@@ -200,11 +200,16 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                                    
 
                                 DBProvider.db.newList(fav);
+                              for (var ing in recipeDetail.ingredients) {
+                                ing.recipeId=recipeDetail.id;
+                                DBProvider.db.newIngredient(ing);
+                              }
                                 setState(() {
                                   recipeDetail.setList();
                                 });
                               } else {
                                 DBProvider.db.deleteList(recipeDetail.id);
+                                DBProvider.db.deleteIngredient(recipeDetail.id);
                                 setState(() {
                                   recipeDetail.setList();
                                 });
@@ -450,9 +455,14 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
               onPressed: () {
                 setState(() {
                   recipeDetail.removeServings();
-                  if(recipeDetail.isOnList)
-                  DBProvider.db.updateServingsList(recipeDetail.id,recipeDetail.servings);
+                  
                 });
+                if(recipeDetail.isOnList){
+                  DBProvider.db.updateServingsList(recipeDetail.id,recipeDetail.servings);
+                  for (var ing in recipeDetail.ingredients) {
+                                DBProvider.db.updateShoppingListAmount(recipeDetail.id, ing.amount, ing.name);
+                              }
+                  }
               },
             ),
 
@@ -470,11 +480,18 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
               icon: Icon(Icons.add_circle_outline, size: 50),
               color: LightColor.main,
               onPressed: () {
+                
                 setState(() {
                   recipeDetail.addServings();
-                  if(recipeDetail.isOnList)
-                  DBProvider.db.updateServingsList(recipeDetail.id,recipeDetail.servings);
+                  
                 });
+                
+                if(recipeDetail.isOnList){
+                  DBProvider.db.updateServingsList(recipeDetail.id,recipeDetail.servings);
+                   for (var ing in recipeDetail.ingredients) {
+                               DBProvider.db.updateShoppingListAmount(recipeDetail.id, ing.amount, ing.name);
+                              }
+                  }
               },
             ),
           ],
