@@ -1,4 +1,4 @@
-package com.thealphamerc.flutter_ecommerce_app;
+package com.gael.cookit;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;
