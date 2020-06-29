@@ -31,8 +31,9 @@ class _MainPageState extends State<MainPage> {
     return Container(
       padding: AppTheme.padding,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
+           
           // RotatedBox(
           //   quarterTurns: 4,
           //   child: _icon(Icons.sort, color: Colors.black54),
@@ -42,21 +43,33 @@ class _MainPageState extends State<MainPage> {
                    
             width: SizeConfig.safeBlockHorizontal*40,
                       ),
-          // ClipRRect(
-          //   borderRadius: BorderRadius.all(Radius.circular(13)),
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //       color: Theme.of(context).backgroundColor,
-          //       boxShadow: <BoxShadow>[
-          //         BoxShadow(
-          //             color: Color(0xfff8f8f8),
-          //             blurRadius: 10,
-          //             spreadRadius: 10),
-          //       ],
-          //     ),
-          //     child: Image.asset("assets/user.png"),
-          //   ),
-          // )
+          ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(13)),
+            child: InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed('/profile');
+      },
+      child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).backgroundColor,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      color: Color(0xfff8f8f8),
+                      blurRadius: 10,
+                      spreadRadius: 10),
+                ],
+              ),
+              child: Image.asset("assets/user.png"),
+            ),
+          ),
+          ),
+
+      //     Align(
+      // alignment: Alignment.topRight,
+      // child: FlutterLogo(
+      //   size: 40,
+      // ),
+      //),
         ],
       ),
     );

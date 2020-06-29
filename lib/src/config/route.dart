@@ -1,3 +1,4 @@
+import 'package:cookit/src/pages/authPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit/src/pages/mainPage.dart';
 import 'package:cookit/src/pages/recipe_detail.dart';
@@ -10,6 +11,7 @@ class Routes{
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => MainPage());
+
       case '/detail':
           return MaterialPageRoute(
             builder: (_) => RecipeDetailPage(
@@ -17,9 +19,13 @@ class Routes{
                 ),
           );
 
+      case '/profile':
+        return MaterialPageRoute(builder: (_) => LoginScreen());
+
         // If args is not of the correct type, return an error page.
         // You can also throw an exception while in development.
         return _errorRoute();
+
       default:
         // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();
