@@ -1,6 +1,6 @@
-import 'package:flutter_ecommerce_app/src/model/category.dart';
-import 'package:flutter_ecommerce_app/src/model/product.dart';
-import 'package:flutter_ecommerce_app/src/model/recipe.dart';
+import 'package:cookit/src/model/category.dart';
+import 'package:cookit/src/model/product.dart';
+import 'package:cookit/src/model/recipe.dart';
 
 class AppData {
    static List<Recipe> recipeList = [

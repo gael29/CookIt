@@ -3,22 +3,22 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce_app/src/model/data.dart';
-import 'package:flutter_ecommerce_app/src/model/recipe.dart';
-import 'package:flutter_ecommerce_app/src/model/product.dart';
-import 'package:flutter_ecommerce_app/src/themes/light_color.dart';
-import 'package:flutter_ecommerce_app/src/themes/theme.dart';
-import 'package:flutter_ecommerce_app/src/wigets/BottomNavigationBar/bootom_navigation_bar.dart';
-import 'package:flutter_ecommerce_app/src/wigets/prduct_icon.dart';
-import 'package:flutter_ecommerce_app/src/wigets/product_card.dart';
-import 'package:flutter_ecommerce_app/src/wigets/recipe_card.dart';
-import 'package:flutter_ecommerce_app/src/wigets/idea_card.dart';
-import 'package:flutter_ecommerce_app/src/wigets/search.dart';
-import 'package:flutter_ecommerce_app/src/wigets/title_text.dart';
+import 'package:cookit/src/model/data.dart';
+import 'package:cookit/src/model/recipe.dart';
+import 'package:cookit/src/model/product.dart';
+import 'package:cookit/src/themes/light_color.dart';
+import 'package:cookit/src/themes/theme.dart';
+import 'package:cookit/src/wigets/BottomNavigationBar/bootom_navigation_bar.dart';
+import 'package:cookit/src/wigets/prduct_icon.dart';
+import 'package:cookit/src/wigets/product_card.dart';
+import 'package:cookit/src/wigets/recipe_card.dart';
+import 'package:cookit/src/wigets/idea_card.dart';
+import 'package:cookit/src/wigets/search.dart';
+import 'package:cookit/src/wigets/title_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_ecommerce_app/src/config/SizeConfig.dart';
+import 'package:cookit/src/config/SizeConfig.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);

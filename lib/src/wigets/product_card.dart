@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce_app/src/model/data.dart';
-import 'package:flutter_ecommerce_app/src/model/product.dart';
-import 'package:flutter_ecommerce_app/src/themes/light_color.dart';
-import 'package:flutter_ecommerce_app/src/themes/theme.dart';
-import 'package:flutter_ecommerce_app/src/wigets/title_text.dart';
+import 'package:cookit/src/model/data.dart';
+import 'package:cookit/src/model/product.dart';
+import 'package:cookit/src/themes/light_color.dart';
+import 'package:cookit/src/themes/theme.dart';
+import 'package:cookit/src/wigets/title_text.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;

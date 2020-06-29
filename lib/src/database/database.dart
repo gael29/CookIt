@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter_ecommerce_app/src/model/ingredient.dart';
-import 'package:flutter_ecommerce_app/src/model/recipe.dart';
+import 'package:cookit/src/model/ingredient.dart';
+import 'package:cookit/src/model/recipe.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce_app/src/config/SizeConfig.dart';
-import 'package:flutter_ecommerce_app/src/model/data.dart';
-import 'package:flutter_ecommerce_app/src/pages/home_page.dart';
-import 'package:flutter_ecommerce_app/src/pages/favPage.dart';
-import 'package:flutter_ecommerce_app/src/pages/shoppingListPage.dart';
-import 'package:flutter_ecommerce_app/src/themes/light_color.dart';
-import 'package:flutter_ecommerce_app/src/themes/theme.dart';
-import 'package:flutter_ecommerce_app/src/wigets/BottomNavigationBar/bootom_navigation_bar.dart';
-import 'package:flutter_ecommerce_app/src/wigets/prduct_icon.dart';
-import 'package:flutter_ecommerce_app/src/wigets/product_card.dart';
-import 'package:flutter_ecommerce_app/src/wigets/title_text.dart';
+import 'package:cookit/src/config/SizeConfig.dart';
+import 'package:cookit/src/model/data.dart';
+import 'package:cookit/src/pages/home_page.dart';
+import 'package:cookit/src/pages/favPage.dart';
+import 'package:cookit/src/pages/shoppingListPage.dart';
+import 'package:cookit/src/themes/light_color.dart';
+import 'package:cookit/src/themes/theme.dart';
+import 'package:cookit/src/wigets/BottomNavigationBar/bootom_navigation_bar.dart';
+import 'package:cookit/src/wigets/prduct_icon.dart';
+import 'package:cookit/src/wigets/product_card.dart';
+import 'package:cookit/src/wigets/title_text.dart';
 
 import 'listPage.dart';
 

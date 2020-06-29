@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce_app/src/config/SizeConfig.dart';
-import 'package:flutter_ecommerce_app/src/model/data.dart';
-import 'package:flutter_ecommerce_app/src/model/recipe.dart';
-import 'package:flutter_ecommerce_app/src/themes/light_color.dart';
-import 'package:flutter_ecommerce_app/src/themes/theme.dart';
-import 'package:flutter_ecommerce_app/src/wigets/title_text.dart';
+import 'package:cookit/src/config/SizeConfig.dart';
+import 'package:cookit/src/model/data.dart';
+import 'package:cookit/src/model/recipe.dart';
+import 'package:cookit/src/themes/light_color.dart';
+import 'package:cookit/src/themes/theme.dart';
+import 'package:cookit/src/wigets/title_text.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 class RecipeCard extends StatefulWidget {

@@ -2,20 +2,20 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce_app/src/config/SizeConfig.dart';
-import 'package:flutter_ecommerce_app/src/database/database.dart';
-import 'package:flutter_ecommerce_app/src/model/category.dart';
-import 'package:flutter_ecommerce_app/src/model/data.dart';
-import 'package:flutter_ecommerce_app/src/model/detail.dart';
-import 'package:flutter_ecommerce_app/src/model/recipe.dart';
-import 'package:flutter_ecommerce_app/src/themes/light_color.dart';
-import 'package:flutter_ecommerce_app/src/themes/theme.dart';
-import 'package:flutter_ecommerce_app/src/wigets/prduct_icon.dart';
-import 'package:flutter_ecommerce_app/src/wigets/title_text.dart';
+import 'package:cookit/src/config/SizeConfig.dart';
+import 'package:cookit/src/database/database.dart';
+import 'package:cookit/src/model/category.dart';
+import 'package:cookit/src/model/data.dart';
+import 'package:cookit/src/model/detail.dart';
+import 'package:cookit/src/model/recipe.dart';
+import 'package:cookit/src/themes/light_color.dart';
+import 'package:cookit/src/themes/theme.dart';
+import 'package:cookit/src/wigets/prduct_icon.dart';
+import 'package:cookit/src/wigets/title_text.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_ecommerce_app/src/extensions/string_extension.dart';
+import 'package:cookit/src/extensions/string_extension.dart';
 
 class RecipeDetailPage extends StatefulWidget {
   final int recipeId;

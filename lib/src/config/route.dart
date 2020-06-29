@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce_app/src/pages/mainPage.dart';
-import 'package:flutter_ecommerce_app/src/pages/recipe_detail.dart';
+import 'package:cookit/src/pages/mainPage.dart';
+import 'package:cookit/src/pages/recipe_detail.dart';
 
 class Routes{
   static Route<dynamic> generateRoute(RouteSettings settings) {

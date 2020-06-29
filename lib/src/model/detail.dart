@@ -1,6 +1,6 @@
-import 'package:flutter_ecommerce_app/src/model/analizedInstruction.dart';
-import 'package:flutter_ecommerce_app/src/model/ingredient.dart';
-import 'package:flutter_ecommerce_app/src/model/instruction.dart';
+import 'package:cookit/src/model/analizedInstruction.dart';
+import 'package:cookit/src/model/ingredient.dart';
+import 'package:cookit/src/model/instruction.dart';
 
 class Detail{
   int id;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce_app/src/config/route.dart';
-import 'package:flutter_ecommerce_app/src/pages/mainPage.dart';
-import 'package:flutter_ecommerce_app/src/pages/recipe_detail.dart';
-import 'package:flutter_ecommerce_app/src/wigets/customRoute.dart';
+import 'package:cookit/src/config/route.dart';
+import 'package:cookit/src/pages/mainPage.dart';
+import 'package:cookit/src/pages/recipe_detail.dart';
+import 'package:cookit/src/wigets/customRoute.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'src/pages/home_page.dart';
 import 'src/themes/theme.dart';

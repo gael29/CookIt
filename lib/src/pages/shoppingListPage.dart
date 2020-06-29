@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce_app/src/database/database.dart';
-import 'package:flutter_ecommerce_app/src/model/data.dart';
-import 'package:flutter_ecommerce_app/src/model/ingredient.dart';
-import 'package:flutter_ecommerce_app/src/model/product.dart';
-import 'package:flutter_ecommerce_app/src/model/recipe.dart';
-import 'package:flutter_ecommerce_app/src/themes/light_color.dart';
-import 'package:flutter_ecommerce_app/src/themes/theme.dart';
-import 'package:flutter_ecommerce_app/src/wigets/title_text.dart';
+import 'package:cookit/src/database/database.dart';
+import 'package:cookit/src/model/data.dart';
+import 'package:cookit/src/model/ingredient.dart';
+import 'package:cookit/src/model/product.dart';
+import 'package:cookit/src/model/recipe.dart';
+import 'package:cookit/src/themes/light_color.dart';
+import 'package:cookit/src/themes/theme.dart';
+import 'package:cookit/src/wigets/title_text.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_ecommerce_app/src/extensions/string_extension.dart';
+import 'package:cookit/src/extensions/string_extension.dart';
 
 class ShoppingListPage extends StatefulWidget {
   ShoppingListPage({Key key, this.title}) : super(key: key);
