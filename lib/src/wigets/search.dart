@@ -40,6 +40,7 @@ class _SearchState extends State<Search> {
                     borderRadius: new BorderRadius.all( Radius.circular(40.0))),
                 child: new Center(
                   child: TextFormField(
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search, color: LightColor.main),
                         border: InputBorder.none,
