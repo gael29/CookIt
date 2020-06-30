@@ -1,4 +1,5 @@
 import 'package:cookit/src/pages/authPage.dart';
+import 'package:cookit/src/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit/src/pages/mainPage.dart';
 import 'package:cookit/src/pages/recipe_detail.dart';
@@ -18,9 +19,12 @@ class Routes{
                   recipeId: args,
                 ),
           );
+          
+      case '/auth':
+          return MaterialPageRoute(builder: (_) => AuthPage());
 
       case '/profile':
-        return MaterialPageRoute(builder: (_) => LoginScreen());
+        return MaterialPageRoute(builder: (_) => ProfilePage());
 
         // If args is not of the correct type, return an error page.
         // You can also throw an exception while in development.

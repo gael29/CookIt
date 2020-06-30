@@ -7,8 +7,6 @@ import 'package:cookit/src/pages/shoppingListPage.dart';
 import 'package:cookit/src/themes/light_color.dart';
 import 'package:cookit/src/themes/theme.dart';
 import 'package:cookit/src/wigets/BottomNavigationBar/bootom_navigation_bar.dart';
-import 'package:cookit/src/wigets/prduct_icon.dart';
-import 'package:cookit/src/wigets/product_card.dart';
 import 'package:cookit/src/wigets/title_text.dart';
 
 import 'listPage.dart';
@@ -47,7 +45,7 @@ class _MainPageState extends State<MainPage> {
             borderRadius: BorderRadius.all(Radius.circular(13)),
             child: InkWell(
       onTap: () {
-        Navigator.of(context).pushNamed('/profile');
+        Navigator.of(context).pushNamed('/auth');
       },
       child: Container(
               decoration: BoxDecoration(
@@ -59,7 +57,17 @@ class _MainPageState extends State<MainPage> {
                       spreadRadius: 10),
                 ],
               ),
-              child: Image.asset("assets/user.png"),
+              child:  CircleAvatar(
+                      radius: 30,
+                      backgroundColor: LightColor.main,
+                      child: CircleAvatar(
+                        radius: 27.0,
+                        backgroundImage: AssetImage(
+                'assets/pp.jpg',
+              ),
+                        backgroundColor: Colors.transparent,
+                      ),
+           )
             ),
           ),
           ),
