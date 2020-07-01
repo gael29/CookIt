@@ -41,36 +41,14 @@ class _MainPageState extends State<MainPage> {
                    
             width: SizeConfig.safeBlockHorizontal*40,
                       ),
-          ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(13)),
-            child: InkWell(
-      onTap: () {
-        Navigator.of(context).pushNamed('/auth');
-      },
-      child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      color: Color(0xfff8f8f8),
-                      blurRadius: 10,
-                      spreadRadius: 10),
-                ],
-              ),
-              child:  CircleAvatar(
-                      radius: 30,
-                      backgroundColor: LightColor.main,
-                      child: CircleAvatar(
-                        radius: 27.0,
-                        backgroundImage: AssetImage(
-                'assets/pp.jpg',
-              ),
-                        backgroundColor: Colors.transparent,
-                      ),
-           )
-            ),
-          ),
-          ),
+          IconButton(
+                    icon: Icon(Icons.account_circle),
+                    iconSize: SizeConfig.safeBlockHorizontal*10,
+                    color: LightColor.main,
+                    onPressed: () {
+                       Navigator.of(context).pushNamed('/auth');
+                    },
+                  ),
 
       //     Align(
       // alignment: Alignment.topRight,
