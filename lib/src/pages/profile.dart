@@ -1,8 +1,16 @@
 import 'package:cookit/src/config/SizeConfig.dart';
+import 'package:cookit/src/services/authentication.dart';
 import 'package:cookit/src/themes/light_color.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
+    ProfilePage({Key key, this.auth, this.userId, this.logoutCallback})
+      : super(key: key);
+
+  final BaseAuth auth;
+  final VoidCallback logoutCallback;
+  final String userId;
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -37,7 +45,7 @@ Widget _header(BuildContext context) {
           ),
         ),
       ),
-          _buildHeader(context)
+          _buildHeader(context),
    
         ],
       );
@@ -130,6 +138,26 @@ Widget _header(BuildContext context) {
       backgroundColor: Colors.white,
       body: ListView(children: <Widget>[
         _header(context),
+                Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32),
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
+                      color: LightColor.main),
+                  child: FlatButton(
+                    onPressed: () async {
+                      // Validate returns true if the form is valid, otherwise false.  
+                      await widget.auth.signOut(); 
+                      Navigator.of(context).popAndPushNamed('/auth');
+                    },
+                    child: Text(
+                      "Déconnexion",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18),
+                    ),
+                  ))),
       
       ]),
     );

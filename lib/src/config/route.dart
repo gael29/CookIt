@@ -1,8 +1,16 @@
 import 'package:cookit/src/pages/authPage.dart';
 import 'package:cookit/src/pages/profile.dart';
+import 'package:cookit/src/pages/root_page.dart';
+import 'package:cookit/src/services/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit/src/pages/mainPage.dart';
 import 'package:cookit/src/pages/recipe_detail.dart';
+
+enum AuthStatus {
+  NOT_DETERMINED,
+  NOT_LOGGED_IN,
+  LOGGED_IN,
+}
 
 class Routes{
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -21,7 +29,7 @@ class Routes{
           );
           
       case '/auth':
-          return MaterialPageRoute(builder: (_) => AuthPage());
+          return MaterialPageRoute(builder: (_) => RootPage(auth: new Auth()));
 
       case '/profile':
         return MaterialPageRoute(builder: (_) => ProfilePage());
