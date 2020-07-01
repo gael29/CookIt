@@ -277,11 +277,11 @@ class _MyHomePageState extends State<MyHomePage> {
       children: <Widget>[
         _search(research, callback),
         if (list) _recipeWidget(),
-        // if (!list) _ideasWidget("Burger"),
-        // if (!list) _ideasWidget("Soup"),
-        // if (!list) _ideasWidget("Salad"),
-        // if (!list) _ideasWidget("Healthy"),
-        // if (!list) _ideasWidget("Pie"),
+        if (!list) _ideasWidget("Burger"),
+        if (!list) _ideasWidget("Soup"),
+        if (!list) _ideasWidget("Salad"),
+        if (!list) _ideasWidget("Healthy"),
+        if (!list) _ideasWidget("Pie"),
  
 
       ],

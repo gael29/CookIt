@@ -40,7 +40,7 @@ dev_dependencies:
 
 flutter_icons:
     image_path: 'assets/appIcon.png'
-    android: true
+    #android: true
     ios: true
 
     #flutter pub run flutter_launcher_icons:main
