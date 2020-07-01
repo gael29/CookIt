@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1080984009317",
+    "firebase_url": "https://cookit-f2d53.firebaseio.com",
+    "project_id": "cookit-f2d53",
+    "storage_bucket": "cookit-f2d53.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080984009317:android:e26e53291fda533fcfa48c",
+        "android_client_info": {
+          "package_name": "com.gael.cookit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080984009317-0fh8afehnh6saf1ne6q2ge0etmvhb57k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA51rNkcPcojZlLJX48SeWyjQAPQ4Op_zQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080984009317-0fh8afehnh6saf1ne6q2ge0etmvhb57k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
