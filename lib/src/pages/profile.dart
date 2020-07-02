@@ -199,6 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ))
       ]),
       ),
+      if(_user.fav.length>0)
       CarouselSlider(
         options: CarouselOptions(
           height: 100,
@@ -255,6 +256,15 @@ class _ProfilePageState extends State<ProfilePage> {
             )
             .toList(),
       )
+      else
+      Column(children: <Widget>[
+        SizedBox(height:10),
+        Text("Vous n'avez pas encore d'amis",style: TextStyle(
+                                    color: LightColor.main,
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold,
+                                  ))
+      ])
     ]);
   }
 
@@ -272,6 +282,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ]),
       ),
+      if(_user.fav.length>0)
       CarouselSlider(
         options: CarouselOptions(
           autoPlay: false,
@@ -326,6 +337,16 @@ class _ProfilePageState extends State<ProfilePage> {
             )
             .toList(),
       )
+       else
+      Column(children: <Widget>[
+        SizedBox(height:10),
+        Text("Vous n'avez pas encore de favoris",style: TextStyle(
+                                    color: LightColor.main,
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold,
+                                  ))
+      ])
+
     ]);
   }
 
@@ -343,6 +364,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ]),
       ),
+      if(_user.plan.length>0)
       CarouselSlider(
         options: CarouselOptions(
           autoPlay: false,
@@ -397,6 +419,15 @@ class _ProfilePageState extends State<ProfilePage> {
             )
             .toList(),
       )
+       else
+      Column(children: <Widget>[
+        SizedBox(height:10),
+        Text("Vous n'avez pas de recettes prévues",style: TextStyle(
+                                    color: LightColor.main,
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold,
+                                  ))
+      ])
     ]);
   }
 
@@ -435,7 +466,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 size: 50.0,
               ))
           : ListView(
-              children: <Widget>[_header(context), _friendSlide(), _favSlide(), _planSlide(),SizedBox(height:50), _logout(),SizedBox(height:50),]),
+              children: <Widget>[_header(context), 
+              _friendSlide(),
+              _favSlide(),
+              _planSlide(),
+              SizedBox(height:50),
+              _logout(),SizedBox(height:50),]),
     );
   }
 }
