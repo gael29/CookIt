@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit/src/config/SizeConfig.dart';
+import 'package:cookit/src/database/database.dart';
+import 'package:cookit/src/model/recipe.dart';
 import 'package:cookit/src/model/user.dart';
 import 'package:cookit/src/services/authentication.dart';
 import 'package:cookit/src/themes/light_color.dart';
@@ -6,12 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:sqflite/sqflite.dart';
 
 class AuthPage extends StatefulWidget {
   AuthPage({this.auth, this.loginCallback});
 
   final BaseAuth auth;
   final VoidCallback loginCallback;
+  final firestoreInstance = Firestore.instance;
 
   @override
   _AuthPageState createState() => _AuthPageState();
@@ -23,11 +28,12 @@ class _AuthPageState extends State<AuthPage> {
   final _sign = GlobalKey<FormState>();
   final _reset = GlobalKey<FormState>();
   final _user = User();
+
   String validatePassword;
   String _email;
   String _password;
   String _errorMessage;
-  bool _isLoading=false;
+  bool _isLoading = false;
 
   // Perform login or signup
   void validateAndSubmit() async {
@@ -40,14 +46,34 @@ class _AuthPageState extends State<AuthPage> {
       if (item == 1) {
         userId = await widget.auth.signIn(_email, _password);
         print('Signed in: $userId');
+        List<Map> _fav = await DBProvider.db.getFavList();
+        List<Map> _plan = await DBProvider.db.getPlanList();
+        widget.firestoreInstance.collection("users").document(userId).setData({
+          "Fav": _fav,
+          "Plan": _plan,
+        }, merge: true).then((_) {
+          print("success!");
+        });
       } else if (item == 2) {
         userId = await widget.auth.signUp(_email, _password);
         //widget.auth.sendEmailVerification();
         //_showVerifyEmailSentDialog();
         print('Signed up user: $userId');
-        Navigator.of(context).popAndPushNamed('/auth');
-      }
-      else if (item == 3) {
+
+        List<Map> _fav = await DBProvider.db.getFavList();
+        List<Map> _plan = await DBProvider.db.getPlanList();
+
+        widget.firestoreInstance.collection("users").document(userId).setData({
+          "Firstname": _user.firstName,
+          "Lastname": _user.lastName,
+          "Image" :"https://eu.ui-avatars.com/api/?size=128&rounded=true&background=ffffff&color=00d181&name="+_user.firstName+"+"+_user.lastName,
+          "Email": _user.email,
+          "Fav": _fav,
+          "Plan": _plan,
+        }).then((_) {
+          Navigator.of(context).popAndPushNamed('/auth');
+        });
+      } else if (item == 3) {
         await widget.auth.resetPassword(_email);
         //widget.auth.sendEmailVerification();
         //_showVerifyEmailSentDialog();
@@ -77,7 +103,7 @@ class _AuthPageState extends State<AuthPage> {
         _isLoading = false;
         _errorMessage = e.message;
         Flushbar(
-          message:_errorMessage,
+          message: _errorMessage,
           icon: Icon(
             Icons.info_outline,
             size: 28.0,
@@ -90,6 +116,29 @@ class _AuthPageState extends State<AuthPage> {
       });
     }
   }
+
+  // Widget _fav() {
+  //   return FutureBuilder<List<Recipe>>(
+  //       future: DBProvider.db.getAllFav(),
+  //       builder: (BuildContext context, AsyncSnapshot<List<Recipe>> snapshot) {
+  //         if (snapshot.hasData) {
+  //           return ListView.builder(
+  //             itemCount: snapshot.data.length,
+  //             itemBuilder: (BuildContext context, int index) {
+  //               Recipe item = snapshot.data[index];
+  //             },
+  //           );
+  //         } else {
+  //           return Container(
+  //               margin: const EdgeInsets.only(top: 50.0),
+  //               child: SpinKitRotatingCircle(
+  //                 color: LightColor.main,
+  //                 size: 50.0,
+  //               ));
+  //         }
+  //       },
+  //     );
+  // }
 
   Widget _header(BuildContext context) {
     return Stack(
@@ -616,18 +665,18 @@ class _AuthPageState extends State<AuthPage> {
     return Form(
         key: _reset,
         child: Column(
-      children: <Widget>[
-        Text(
-          "Récupérez votre mot de passe",
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: SizeConfig.safeBlockVertical * 2.5,
-              fontWeight: FontWeight.normal),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Padding(
+          children: <Widget>[
+            Text(
+              "Récupérez votre mot de passe",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: SizeConfig.safeBlockVertical * 2.5,
+                  fontWeight: FontWeight.normal),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 32),
               child: Material(
                 elevation: 2.0,
@@ -665,91 +714,90 @@ class _AuthPageState extends State<AuthPage> {
                 ),
               ),
             ),
-        SizedBox(
-          height: 20,
-        ),
-        Text(
-          "Un mail de récupération va vous être envoyé",
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: SizeConfig.safeBlockVertical * 2.5,
-              fontWeight: FontWeight.normal),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-       Padding(
-              padding: EdgeInsets.symmetric(horizontal: 32),
-              child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                      color: LightColor.main),
-                  child: FlatButton(
-                    onPressed: () {
-                      // Validate returns true if the form is valid, otherwise false.
-                      if (_reset.currentState.validate()) {
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
-                        _reset.currentState.save();
-                        _email = _user.email;
-                        validateAndSubmit();
-                      }
-                    },
-                    child: Text(
-                      "Récupérer mon mot de passe",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18),
-                    ),
-                  ))),
-        SizedBox(
-          height: 20,
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Text(
-          "Vous êtes déjà inscrit ?",
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: SizeConfig.safeBlockVertical * 2.5,
-              fontWeight: FontWeight.normal),
-        ),
-        InkWell(
-          child: Text("Connexion",
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              "Un mail de récupération va vous être envoyé",
               style: TextStyle(
-                  color: LightColor.main,
-                  fontWeight: FontWeight.w500,
-                  fontSize: SizeConfig.safeBlockVertical * 2.5)),
-          onTap: () {
-            setState(() {
-              item = 1;
-            });
-          },
-        ),
-        SizedBox(
-          height: 20,
-        ),
-      ],
-        )
-    );
+                  color: Colors.black,
+                  fontSize: SizeConfig.safeBlockVertical * 2.5,
+                  fontWeight: FontWeight.normal),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: 32),
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        color: LightColor.main),
+                    child: FlatButton(
+                      onPressed: () {
+                        // Validate returns true if the form is valid, otherwise false.
+                        if (_reset.currentState.validate()) {
+                          // If the form is valid, display a snackbar. In the real world,
+                          // you'd often call a server or save the information in a database.
+                          _reset.currentState.save();
+                          _email = _user.email;
+                          validateAndSubmit();
+                        }
+                      },
+                      child: Text(
+                        "Récupérer mon mot de passe",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18),
+                      ),
+                    ))),
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              "Vous êtes déjà inscrit ?",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: SizeConfig.safeBlockVertical * 2.5,
+                  fontWeight: FontWeight.normal),
+            ),
+            InkWell(
+              child: Text("Connexion",
+                  style: TextStyle(
+                      color: LightColor.main,
+                      fontWeight: FontWeight.w500,
+                      fontSize: SizeConfig.safeBlockVertical * 2.5)),
+              onTap: () {
+                setState(() {
+                  item = 1;
+                });
+              },
+            ),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ));
   }
 
   Widget _itemSelect() {
-    if (item == 1 && _isLoading==false) {
+    if (item == 1 && _isLoading == false) {
       return _login();
-    } else if (item == 2 && _isLoading==false)
+    } else if (item == 2 && _isLoading == false)
       return _register();
-    else if (item == 3 && _isLoading==false)
+    else if (item == 3 && _isLoading == false)
       return _passwordForgot();
-      else if (_isLoading)
+    else if (_isLoading)
       return Container(
-                margin: const EdgeInsets.only(top: 50.0),
-                child: SpinKitRotatingCircle(
-                  color: LightColor.main,
-                  size: 50.0,
-                ));
+          margin: const EdgeInsets.only(top: 50.0),
+          child: SpinKitRotatingCircle(
+            color: LightColor.main,
+            size: 50.0,
+          ));
     else
       return _login();
   }

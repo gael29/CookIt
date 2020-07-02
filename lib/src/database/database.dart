@@ -125,6 +125,19 @@ class DBProvider {
     return list;
   }
 
+  Future<List<Map>> getFavList() async {
+    final db = await database;
+    List<Map> list = await db.query("Fav");
+    return list;
+  }
+
+  Future<List<Map>> getPlanList() async {
+    final db = await database;
+    List<Map> list = await db.query("List");
+    return list;
+  }
+
+
   Future<List<Recipe>> getAllList() async {
     final db = await database;
     var res = await db.query("List");
