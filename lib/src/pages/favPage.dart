@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit/src/services/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit/src/database/database.dart';
 import 'package:cookit/src/model/data.dart';
@@ -8,13 +10,38 @@ import 'package:cookit/src/themes/theme.dart';
 import 'package:cookit/src/wigets/title_text.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+enum AuthStatus {
+  NOT_DETERMINED,
+  NOT_LOGGED_IN,
+  LOGGED_IN,
+}
+
 class FavPage extends StatefulWidget {
   FavPage({Key key, this.title}) : super(key: key);
   final String title;
+  final BaseAuth auth = new Auth();
+  final firestoreInstance = Firestore.instance;
     @override
   _FavPageState createState() => _FavPageState();
 }
 class _FavPageState extends State<FavPage> {
+  AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
+  String _userId = "";
+
+   
+  @override
+  void initState() {
+    super.initState();
+    widget.auth.getCurrentUser().then((user) {
+      setState(() {
+        if (user != null) {
+          _userId = user?.uid;
+        }
+        authStatus =
+            user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
+      });
+    });
+  }
 
    @override
   Widget build(BuildContext context) {
@@ -31,8 +58,18 @@ class _FavPageState extends State<FavPage> {
                   direction: DismissDirection.endToStart,
                   key: UniqueKey(),
                   background: Container(color: LightColor.red),
-                  onDismissed: (direction) {
-                    DBProvider.db.deleteFav(item.id);
+                  onDismissed: (direction) async {
+                    setState(() {
+                       DBProvider.db.deleteFav(item.id);
+                    });
+                              if(authStatus==AuthStatus.LOGGED_IN){
+                                List<Map> _fav = await DBProvider.db.getFavList();
+                                widget.firestoreInstance.collection("users").document(_userId).updateData({
+                                "Fav": _fav,
+                              }).then((_) {
+                              //  Navigator.of(context).popAndPushNamed('/auth');
+                              });
+                              }
                   },
                    child:// _item(item)
                     SingleChildScrollView(
@@ -58,7 +95,7 @@ class _FavPageState extends State<FavPage> {
     );
   }
 
-
+ 
   Widget _item(Recipe model) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -113,10 +150,19 @@ class _FavPageState extends State<FavPage> {
                 IconButton(
                     icon: Icon(Icons.delete_outline),
                     color: LightColor.main,
-                    onPressed: () {
+                    onPressed: () async {
                       setState(() {
                         DBProvider.db.deleteFav(model.id);
                       });
+
+                       if(authStatus==AuthStatus.LOGGED_IN){
+                                List<Map> _fav = await DBProvider.db.getFavList();
+                                widget.firestoreInstance.collection("users").document(_userId).updateData({
+                                "Fav": _fav,
+                              }).then((_) {
+                              //  Navigator.of(context).popAndPushNamed('/auth');
+                              });
+                              }
               
                     },
                   )

@@ -7,7 +7,7 @@ import 'authPage.dart';
 import 'profile.dart';
 
 enum AuthStatus {
-  NOT_DETERMINED,
+  NOT_DETERMINED, 
   NOT_LOGGED_IN,
   LOGGED_IN,
 }
