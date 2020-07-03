@@ -1,4 +1,6 @@
+import 'package:cookit/src/pages/addFriendPage.dart';
 import 'package:cookit/src/pages/authPage.dart';
+import 'package:cookit/src/pages/friendPage.dart';
 import 'package:cookit/src/pages/profile.dart';
 import 'package:cookit/src/pages/root_page.dart';
 import 'package:cookit/src/services/authentication.dart';
@@ -33,6 +35,20 @@ class Routes{
 
       case '/profile':
         return MaterialPageRoute(builder: (_) => ProfilePage());
+
+      case '/addFriend':
+        return MaterialPageRoute(
+          builder: (_) => AddFriendPage(
+                  userId: args,
+                )
+            );
+
+      case '/friend':
+        return MaterialPageRoute(
+            builder: (_) => FriendPage(
+                  friendId: args,
+                ),
+          );
 
         // If args is not of the correct type, return an error page.
         // You can also throw an exception while in development.

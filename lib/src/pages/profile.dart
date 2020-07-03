@@ -192,11 +192,15 @@ class _ProfilePageState extends State<ProfilePage> {
           fontSize: SizeConfig.safeBlockHorizontal * 5,
           fontWeight: FontWeight.w700,
         ),
-        Text("Ajouter des amis",style: TextStyle(
+        InkWell(
+    child: Text("Ajouter des amis",style: TextStyle(
                                     color: LightColor.main,
                                     fontSize: 15.0,
                                     fontWeight: FontWeight.bold,
-                                  ))
+                                  )),
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed('/addFriend',arguments: widget.userId);},
+        )
       ]),
       ),
       if(_user.fav.length>0)
