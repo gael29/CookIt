@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit/src/services/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit/src/database/database.dart';
 import 'package:cookit/src/model/data.dart';
@@ -8,13 +10,38 @@ import 'package:cookit/src/themes/theme.dart';
 import 'package:cookit/src/wigets/title_text.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+enum AuthStatus {
+  NOT_DETERMINED,
+  NOT_LOGGED_IN,
+  LOGGED_IN,
+}
+
 class ListPage extends StatefulWidget {
   ListPage({Key key, this.title}) : super(key: key);
   final String title;
+  final BaseAuth auth = new Auth();
+  final firestoreInstance = Firestore.instance;
     @override
   _ListPageState createState() => _ListPageState();
 }
 class _ListPageState extends State<ListPage> {
+
+  AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
+  String _userId = "";
+
+  @override
+  void initState() {
+    super.initState();
+    widget.auth.getCurrentUser().then((user) {
+      setState(() {
+        if (user != null) {
+          _userId = user?.uid;
+        }
+        authStatus =
+            user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
+      });
+    });
+  }
 
    @override
   Widget build(BuildContext context) {
@@ -31,9 +58,20 @@ class _ListPageState extends State<ListPage> {
                   direction: DismissDirection.endToStart,
                   key: UniqueKey(),
                   background: Container(color: LightColor.red),
-                  onDismissed: (direction) {
-                    DBProvider.db.deleteList(item.id);
+                  onDismissed: (direction) async {
+                    setState(() {
+                      DBProvider.db.deleteList(item.id);
                     DBProvider.db.deleteIngredient(item.id);
+                    });
+                    
+                     if(authStatus==AuthStatus.LOGGED_IN){
+                                List<Map> _plan = await DBProvider.db.getPlanList();
+                                widget.firestoreInstance.collection("users").document(_userId).updateData({
+                                "Plan": _plan,
+                              }).then((_) {
+                              //  Navigator.of(context).popAndPushNamed('/auth');
+                              });
+                              }
                   },
                    child:// _item(item)
                     SingleChildScrollView(
@@ -109,11 +147,21 @@ class _ListPageState extends State<ListPage> {
                 IconButton(
                     icon: Icon(Icons.delete_outline),
                     color: LightColor.main,
-                    onPressed: () {
+                    onPressed: () async {
                       setState(() {
                         DBProvider.db.deleteList(model.id);
                         DBProvider.db.deleteIngredient(model.id);
+                         
                       });
+
+                      if(authStatus==AuthStatus.LOGGED_IN){
+                                List<Map> _plan = await DBProvider.db.getPlanList();
+                                widget.firestoreInstance.collection("users").document(_userId).updateData({
+                                "Plan": _plan,
+                              }).then((_) {
+                              //  Navigator.of(context).popAndPushNamed('/auth');
+                              });
+                              }
               
                     },
                   )

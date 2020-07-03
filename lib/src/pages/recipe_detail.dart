@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit/src/services/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit/src/config/SizeConfig.dart';
 import 'package:cookit/src/database/database.dart';
@@ -17,9 +19,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:cookit/src/extensions/string_extension.dart';
 
+enum AuthStatus {
+  NOT_DETERMINED,
+  NOT_LOGGED_IN,
+  LOGGED_IN,
+}
+
 class RecipeDetailPage extends StatefulWidget {
   final int recipeId;
   RecipeDetailPage({Key key, @required this.recipeId}) : super(key: key);
+  final BaseAuth auth = new Auth();
+  final firestoreInstance = Firestore.instance;
 
   @override
   _RecipeDetailPageState createState() => _RecipeDetailPageState();
@@ -33,6 +43,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
   AnimationController controller;
   Animation<double> animation;
 
+   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
+  String _userId = "";
+
   String infoUrl;
   Detail recipeDetail = new Detail();
   Recipe recipe = new Recipe();
@@ -41,6 +54,15 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
   @override
   void initState() {
     super.initState();
+      widget.auth.getCurrentUser().then((user) {
+      setState(() {
+        if (user != null) {
+          _userId = user?.uid;
+        }
+        authStatus =
+            user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
+      });
+    });
     controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     animation = Tween<double>(begin: 0, end: 1).animate(
@@ -146,7 +168,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                             color: recipeDetail.isliked
                                 ? LightColor.red
                                 : LightColor.background,
-                            onPressed: () {
+                            onPressed: () async {
                               if (!recipeDetail.isliked) {
                                 Recipe fav = new Recipe();
                                 fav.RecipeFav(
@@ -166,6 +188,14 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                                 setState(() {
                                   recipeDetail.setLike();
                                 });
+                              }  
+                              if(authStatus==AuthStatus.LOGGED_IN){
+                                List<Map> _fav = await DBProvider.db.getFavList();
+                                widget.firestoreInstance.collection("users").document(_userId).updateData({
+                                "Fav": _fav,
+                              }).then((_) {
+                              //  Navigator.of(context).popAndPushNamed('/auth');
+                              });
                               }
                             },
                           ),
@@ -186,7 +216,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                             color: recipeDetail.isOnList
                                 ? LightColor.red
                                 : LightColor.background,
-                            onPressed: () {
+                            onPressed: () async {
                               setState(() {
                                 if (!recipeDetail.isOnList) {
                                 Recipe fav = new Recipe();
@@ -215,7 +245,16 @@ class _RecipeDetailPageState extends State<RecipeDetailPage>
                                   recipeDetail.setList();
                                 });
                               }
+                              
                               });
+                                if(authStatus==AuthStatus.LOGGED_IN){
+                                List<Map> _plan = await DBProvider.db.getPlanList();
+                                widget.firestoreInstance.collection("users").document(_userId).updateData({
+                                "Plan": _plan,
+                              }).then((_) {
+                              //  Navigator.of(context).popAndPushNamed('/auth');
+                              });
+                              }
                             },
                           ),
                         ),
