@@ -45,6 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     setState(() {
       _image = File(pickedFile.path);
+      isLoading=true;
       _uploadFile(_image,widget.userId);
     });
      }
@@ -75,6 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
         .then((user) {
       setState(() {
         _user.image = user.data["Image"];
+        isLoading=false;
       });
     });
                       });
