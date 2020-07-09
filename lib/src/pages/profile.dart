@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit/src/config/SizeConfig.dart';
 import 'package:cookit/src/model/user.dart';
 import 'package:cookit/src/services/authentication.dart';
 import 'package:cookit/src/themes/light_color.dart';
 import 'package:cookit/src/wigets/title_text.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key, this.auth, this.userId, this.logoutCallback})
@@ -24,11 +28,56 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final _user = User();
   bool isLoading = true;
+  dynamic _pickImageError;
 
   @override
   void initState() {
     super.initState();
     _getUserInfo();
+  }
+
+    File _image;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+     try {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = File(pickedFile.path);
+      _uploadFile(_image,widget.userId);
+    });
+     }
+     catch (e) {
+          setState(() {
+            _pickImageError = e;
+          });
+        }
+  }
+
+  Future<void> _uploadFile(File file, String filename) async {
+    StorageReference storageReference;
+
+      storageReference = 
+        FirebaseStorage.instance.ref().child("Images/$filename");
+    
+ 
+    final StorageUploadTask uploadTask = storageReference.putFile(file);
+    final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
+    final String url = (await downloadUrl.ref.getDownloadURL());
+    widget.firestoreInstance.collection("users").document(widget.userId).updateData({
+                        "Image":  url
+                      }).then((_) {
+                       widget.firestoreInstance
+        .collection("users")
+        .document(widget.userId)
+        .get()
+        .then((user) {
+      setState(() {
+        _user.image = user.data["Image"];
+      });
+    });
+                      });
   }
 
   Future _getUserInfo() async {
@@ -170,9 +219,13 @@ class _ProfilePageState extends State<ProfilePage> {
               Material(
                 elevation: 5.0,
                 shape: CircleBorder(),
-                child: CircleAvatar(
+                child: InkWell(
+                    onTap: () => getImage(),
+                    child: 
+                    CircleAvatar(
                     radius: 50.0, backgroundImage: NetworkImage(_user.image)),
               ),
+              )
             ],
           ),
         ],
@@ -442,7 +495,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 size: 50.0,
               ))
           : ListView(
-              children: <Widget>[_header(context), 
+              children: <Widget>[_header(context),
               _friendSlide(),
               _favSlide(),
               _planSlide(),
