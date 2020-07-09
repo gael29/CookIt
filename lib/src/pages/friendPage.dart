@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit/src/config/SizeConfig.dart';
 import 'package:cookit/src/model/user.dart';
@@ -13,24 +15,30 @@ class FriendPage extends StatefulWidget {
   FriendPage({Key key, @required this.friendId}) : super(key: key);
 
   final firestoreInstance = Firestore.instance;
-  
+  final BaseAuth auth = new Auth();
 
   @override
   _FriendPageState createState() => _FriendPageState();
 }
 
 class _FriendPageState extends State<FriendPage> {
+  final _friend = User();
   final _user = User();
+  List _friendList = List();
   bool isLoading = true;
+  bool isFriend = false;
+  var friendIndex;
 
   @override
   void initState() {
     super.initState();
-    _getUserInfo();
+    _getFriendInfo();
+    // _getUserInfo();
+    // _getFriendList();
   }
 
-  Future _getUserInfo() async {
-    widget.firestoreInstance
+  Future _getFriendInfo() async {
+    await widget.firestoreInstance
         .collection("users")
         .document(widget.friendId)
         .get()
@@ -38,14 +46,43 @@ class _FriendPageState extends State<FriendPage> {
       //print(user.data["Fav"]);
 
       setState(() {
-        _user.firstName = user.data["Firstname"];
-        _user.lastName = user.data["Lastname"];
-        _user.email = user.data["Email"];
-        _user.image = user.data["Image"];
-        _user.fav = user.data["Fav"];
-        _user.plan = user.data["Plan"];
+        _friend.id = widget.friendId;
+        _friend.firstName = user.data["Firstname"];
+        _friend.lastName = user.data["Lastname"];
+        _friend.email = user.data["Email"];
+        _friend.image = user.data["Image"];
+        _friend.fav = user.data["Fav"];
+        _friend.plan = user.data["Plan"];
+        _friend.friends = user.data["Friends"];
         //print(_user.plan[1]["name"]);
-        isLoading = false;
+      });
+    });
+
+    await widget.auth.getCurrentUser().then((user) {
+      setState(() {
+        if (user != null) {
+          _user.id = user?.uid;
+        }
+      });
+    });
+
+    await widget.firestoreInstance
+        .collection("users")
+        .document(_user.id)
+        .get()
+        .then((user) {
+      //print(user.data["Fav"]);
+      _user.friends = user.data["Friends"];
+      Future.forEach(_user.friends, (friendList) async {
+        if (friendList["Id"] == _friend.id) {
+          setState(() {
+            isFriend = true;
+            // friendIndex = i;
+          });
+        }
+      });
+      setState(() {
+         isLoading = false;
       });
     });
   }
@@ -78,6 +115,56 @@ class _FriendPageState extends State<FriendPage> {
             ),
           ),
         ),
+        if (isFriend)
+          Positioned(
+            top: 0.0,
+            right: 0.0,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, right: 10),
+              child: CircleAvatar(
+                radius: SizeConfig.safeBlockVertical * 4,
+                backgroundColor: LightColor.background,
+                child: IconButton(
+                    icon: Icon(Icons.remove_circle),
+                    color: LightColor.main,
+                    onPressed: () {
+                     _user.friends.removeWhere((item) => item['Id'] == _friend.id);
+                                  widget.firestoreInstance.collection("users").document(_user.id).updateData({
+                        "Friends":  _user.friends
+                      }).then((_) {
+                      setState(() {
+                        isFriend = !isFriend;
+                      });
+                      });
+                    }),
+              ),
+            ),
+          ),
+          if (!isFriend)
+          Positioned(
+            top: 0.0,
+            right: 0.0,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, right: 10),
+              child: CircleAvatar(
+                radius: SizeConfig.safeBlockVertical * 4,
+                backgroundColor: LightColor.background,
+                child: IconButton(
+                    icon: Icon(Icons.person_add),
+                    color: LightColor.main,
+                    onPressed: () {
+                      _user.friends.add(_friend.toJson());
+                                  widget.firestoreInstance.collection("users").document(_user.id).updateData({
+                        "Friends":  _user.friends
+                      }).then((_) {
+                      setState(() {
+                        isFriend = !isFriend;
+                      });
+                      });
+                    }),
+              ),
+            ),
+          ),
         _buildHeader(context),
       ],
     );
@@ -103,7 +190,7 @@ class _FriendPageState extends State<FriendPage> {
                     height: 70.0,
                   ),
                   Text(
-                    _user.firstName + " " + _user.lastName,
+                    _friend.firstName + " " + _friend.lastName,
                     style: Theme.of(context).textTheme.title,
                   ),
                   SizedBox(
@@ -117,7 +204,7 @@ class _FriendPageState extends State<FriendPage> {
                         Expanded(
                           child: ListTile(
                             title: Text(
-                              _user.fav.length.toString(),
+                              _friend.fav.length.toString(),
                               textAlign: TextAlign.center,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
@@ -129,7 +216,7 @@ class _FriendPageState extends State<FriendPage> {
                         Expanded(
                           child: ListTile(
                             title: Text(
-                              _user.plan.length.toString(),
+                              _friend.plan.length.toString(),
                               textAlign: TextAlign.center,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
@@ -141,7 +228,7 @@ class _FriendPageState extends State<FriendPage> {
                         Expanded(
                           child: ListTile(
                             title: Text(
-                              "120",
+                             _friend.friends.length.toString(),
                               textAlign: TextAlign.center,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
@@ -164,7 +251,7 @@ class _FriendPageState extends State<FriendPage> {
                 elevation: 5.0,
                 shape: CircleBorder(),
                 child: CircleAvatar(
-                    radius: 50.0, backgroundImage: NetworkImage(_user.image)),
+                    radius: 50.0, backgroundImage: NetworkImage(_friend.image)),
               ),
             ],
           ),
@@ -176,251 +263,241 @@ class _FriendPageState extends State<FriendPage> {
   Widget _friendSlide() {
     return Column(children: <Widget>[
       Container(
-                    margin: EdgeInsets.only(top:20,left: 30.0, right: 30.0),
-                    child:
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-        TitleText(
-          text: 'Amis',
-          fontSize: SizeConfig.safeBlockHorizontal * 5,
-          fontWeight: FontWeight.w700,
-        ),
-     
-      ]),
+        margin: EdgeInsets.only(top: 20, left: 30.0, right: 30.0),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              TitleText(
+                text: 'Amis',
+                fontSize: SizeConfig.safeBlockHorizontal * 5,
+                fontWeight: FontWeight.w700,
+              ),
+            ]),
       ),
-      if(_user.fav.length>0)
-      CarouselSlider(
-        options: CarouselOptions(
-          height: 100,
-          autoPlay: false,
-          aspectRatio: 2.0,
-          enlargeCenterPage: true,
-        ),
-        items: _user.fav
-            .map((item) => InkWell(
-      onTap: () {
-        //Navigator.of(context).pushNamed('/detail', arguments: item["id"]);
-      },
-      child: Container(
+      if (_friend.friends.length > 0)
+        CarouselSlider(
+          options: CarouselOptions(
+            height: 100,
+            autoPlay: false,
+            aspectRatio: 2.0,
+            enlargeCenterPage: true,
+          ),
+          items: _friend.friends
+              .map((item) => InkWell(
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/friend', arguments: item["Id"]);
+                  },
                   child: Container(
-                    margin: EdgeInsets.all(5.0),
-                    child: ClipRRect(
-                   
-                        child: Stack(
-                          children: <Widget>[
-                            CircleAvatar(
-                      radius: SizeConfig.safeBlockVertical*6,
-                      backgroundColor: LightColor.main,
-                      child: CircleAvatar(
-                        radius: SizeConfig.safeBlockVertical*5.5,
-                        backgroundImage: NetworkImage(_user.image),
-                        backgroundColor: Colors.transparent,
-                      ),
-                    ),
-                            
-                            Positioned(
-                              bottom: 0.0,
-                              left: 0.0,
-                              right: 0.0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                 
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 20.0),
-                                child: Text(
-                                  "",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                    child: Container(
+                      margin: EdgeInsets.all(5.0),
+                      child: ClipRRect(
+                          child: Stack(
+                        children: <Widget>[
+                          CircleAvatar(
+                            radius: SizeConfig.safeBlockVertical * 6,
+                            backgroundColor: LightColor.main,
+                            child: CircleAvatar(
+                              radius: SizeConfig.safeBlockVertical * 5.5,
+                              backgroundImage: NetworkImage(item["Image"]),
+                              backgroundColor: Colors.transparent,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0.0,
+                            left: 0.0,
+                            right: 0.0,
+                            child: Container(
+                              decoration: BoxDecoration(),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 20.0),
+                              child: Text(
+                                "",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                          ],
-                        )),
-                  ),
-                ))
-            )
-            .toList(),
-      )
+                          ),
+                        ],
+                      )),
+                    ),
+                  )))
+              .toList(),
+        )
       else
-      Column(children: <Widget>[
-        SizedBox(height:10),
-        Text(_user.firstName+" n'a pas encore d'amis",style: TextStyle(
-                                    color: LightColor.main,
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.bold,
-                                  ))
-      ])
+        Column(children: <Widget>[
+          SizedBox(height: 10),
+          Text(_friend.firstName + " n'a pas encore d'amis",
+              style: TextStyle(
+                color: LightColor.main,
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold,
+              ))
+        ])
     ]);
   }
-
 
   Widget _favSlide() {
     return Column(children: <Widget>[
       Container(
-                    margin: EdgeInsets.only(top:20,left: 30.0, right: 30.0),
-                    child:
-      Row(children: <Widget>[
-        TitleText(
-          text: 'Favoris',
-          fontSize: SizeConfig.safeBlockHorizontal * 5,
-          fontWeight: FontWeight.w700,
-        ),
-      ]),
+        margin: EdgeInsets.only(top: 20, left: 30.0, right: 30.0),
+        child: Row(children: <Widget>[
+          TitleText(
+            text: 'Favoris',
+            fontSize: SizeConfig.safeBlockHorizontal * 5,
+            fontWeight: FontWeight.w700,
+          ),
+        ]),
       ),
-      if(_user.fav.length>0)
-      CarouselSlider(
-        options: CarouselOptions(
-          autoPlay: false,
-          aspectRatio: 2.0,
-          enlargeCenterPage: true,
-        ),
-        items: _user.fav
-            .map((item) => InkWell(
-      onTap: () {
-        Navigator.of(context).pushNamed('/detail', arguments: item["id"]);
-      },
-      child: Container(
+      if (_friend.fav.length > 0)
+        CarouselSlider(
+          options: CarouselOptions(
+            autoPlay: false,
+            aspectRatio: 2.0,
+            enlargeCenterPage: true,
+          ),
+          items: _friend.fav
+              .map((item) => InkWell(
+                  onTap: () {
+                    Navigator.of(context)
+                        .pushNamed('/detail', arguments: item["id"]);
+                  },
                   child: Container(
-                    margin: EdgeInsets.all(5.0),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        child: Stack(
-                          children: <Widget>[
-                            Image.network(item["image"],
-                                fit: BoxFit.cover, width: 1000.0),
-                            Positioned(
-                              bottom: 0.0,
-                              left: 0.0,
-                              right: 0.0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color.fromARGB(200, 0, 0, 0),
-                                      Color.fromARGB(0, 0, 0, 0)
-                                    ],
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
+                    child: Container(
+                      margin: EdgeInsets.all(5.0),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                          child: Stack(
+                            children: <Widget>[
+                              Image.network(item["image"],
+                                  fit: BoxFit.cover, width: 1000.0),
+                              Positioned(
+                                bottom: 0.0,
+                                left: 0.0,
+                                right: 0.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color.fromARGB(200, 0, 0, 0),
+                                        Color.fromARGB(0, 0, 0, 0)
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
                                   ),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 20.0),
-                                child: Text(
-                                  item["name"],
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10.0, horizontal: 20.0),
+                                  child: Text(
+                                    item["name"],
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        )),
-                  ),
-                ))
-            )
-            .toList(),
-      )
-       else
-      Column(children: <Widget>[
-        SizedBox(height:10),
-        Text(_user.firstName+" n'a pas encore de favoris",style: TextStyle(
-                                    color: LightColor.main,
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.bold,
-                                  ))
-      ])
-
+                            ],
+                          )),
+                    ),
+                  )))
+              .toList(),
+        )
+      else
+        Column(children: <Widget>[
+          SizedBox(height: 10),
+          Text(_friend.firstName + " n'a pas encore de favoris",
+              style: TextStyle(
+                color: LightColor.main,
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold,
+              ))
+        ])
     ]);
   }
 
-  
   Widget _planSlide() {
     return Column(children: <Widget>[
       Container(
-                    margin: EdgeInsets.only(top:20,left: 30.0, right: 30.0),
-                    child:
-      Row(children: <Widget>[
-        TitleText(
-          text: 'Plans',
-          fontSize: SizeConfig.safeBlockHorizontal * 5,
-          fontWeight: FontWeight.w700,
-        ),
-      ]),
+        margin: EdgeInsets.only(top: 20, left: 30.0, right: 30.0),
+        child: Row(children: <Widget>[
+          TitleText(
+            text: 'Plans',
+            fontSize: SizeConfig.safeBlockHorizontal * 5,
+            fontWeight: FontWeight.w700,
+          ),
+        ]),
       ),
-      if(_user.plan.length>0)
-      CarouselSlider(
-        options: CarouselOptions(
-          autoPlay: false,
-          aspectRatio: 2.0,
-          enlargeCenterPage: true,
-        ),
-        items: _user.plan
-            .map((item) => InkWell(
-      onTap: () {
-        Navigator.of(context).pushNamed('/detail', arguments: item["id"]);
-      },
-      child: Container(
+      if (_friend.plan.length > 0)
+        CarouselSlider(
+          options: CarouselOptions(
+            autoPlay: false,
+            aspectRatio: 2.0,
+            enlargeCenterPage: true,
+          ),
+          items: _friend.plan
+              .map((item) => InkWell(
+                  onTap: () {
+                    Navigator.of(context)
+                        .pushNamed('/detail', arguments: item["id"]);
+                  },
                   child: Container(
-                    margin: EdgeInsets.all(5.0),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        child: Stack(
-                          children: <Widget>[
-                            Image.network(item["image"],
-                                fit: BoxFit.cover, width: 1000.0),
-                            Positioned(
-                              bottom: 0.0,
-                              left: 0.0,
-                              right: 0.0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color.fromARGB(200, 0, 0, 0),
-                                      Color.fromARGB(0, 0, 0, 0)
-                                    ],
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
+                    child: Container(
+                      margin: EdgeInsets.all(5.0),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                          child: Stack(
+                            children: <Widget>[
+                              Image.network(item["image"],
+                                  fit: BoxFit.cover, width: 1000.0),
+                              Positioned(
+                                bottom: 0.0,
+                                left: 0.0,
+                                right: 0.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color.fromARGB(200, 0, 0, 0),
+                                        Color.fromARGB(0, 0, 0, 0)
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
                                   ),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 20.0),
-                                child: Text(
-                                  item["name"],
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10.0, horizontal: 20.0),
+                                  child: Text(
+                                    item["name"],
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        )),
-                  ),
-                ))
-            )
-            .toList(),
-      )
-       else
-      Column(children: <Widget>[
-        SizedBox(height:10),
-        Text(_user.firstName+" n'a pas encore de recette prévue",style: TextStyle(
-                                    color: LightColor.main,
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.bold,
-                                  ))
-      ])
+                            ],
+                          )),
+                    ),
+                  )))
+              .toList(),
+        )
+      else
+        Column(children: <Widget>[
+          SizedBox(height: 10),
+          Text(_friend.firstName + " n'a pas encore de recette prévue",
+              style: TextStyle(
+                color: LightColor.main,
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold,
+              ))
+        ])
     ]);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -433,13 +510,13 @@ class _FriendPageState extends State<FriendPage> {
                 color: LightColor.main,
                 size: 50.0,
               ))
-          : ListView(
-              children: <Widget>[_header(context), 
+          : ListView(children: <Widget>[
+              _header(context),
               _friendSlide(),
               _favSlide(),
               _planSlide(),
-              SizedBox(height:50),
-           ]),
+              SizedBox(height: 50),
+            ]),
     );
   }
 }

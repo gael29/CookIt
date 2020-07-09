@@ -18,64 +18,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
         
   bool isLoading = true;
   List<User> userList = List<User>();
-  final List<Map> schoolLists = [
-    {
-      "name": "Edgewick Scchol",
-      "location": "572 Statan NY, 12483",
-      "type": "Higher Secondary School",
-      "logoText":
-          "https://cdn.pixabay.com/photo/2017/03/16/21/18/logo-2150297_960_720.png"
-    },
-    {
-      "name": "Xaviers International",
-      "location": "234 Road Kathmandu, Nepal",
-      "type": "Higher Secondary School",
-      "logoText":
-          "https://cdn.pixabay.com/photo/2017/01/31/13/14/animal-2023924_960_720.png"
-    },
-    {
-      "name": "Kinder Garden",
-      "location": "572 Statan NY, 12483",
-      "type": "Play Group School",
-      "logoText":
-          "https://cdn.pixabay.com/photo/2016/06/09/18/36/logo-1446293_960_720.png"
-    },
-    {
-      "name": "WilingTon Cambridge",
-      "location": "Kasai Pantan NY, 12483",
-      "type": "Lower Secondary School",
-      "logoText":
-          "https://cdn.pixabay.com/photo/2017/01/13/01/22/rocket-1976107_960_720.png"
-    },
-    {
-      "name": "Fredik Panlon",
-      "location": "572 Statan NY, 12483",
-      "type": "Higher Secondary School",
-      "logoText":
-          "https://cdn.pixabay.com/photo/2017/03/16/21/18/logo-2150297_960_720.png"
-    },
-    {
-      "name": "Whitehouse International",
-      "location": "234 Road Kathmandu, Nepal",
-      "type": "Higher Secondary School",
-      "logoText":
-          "https://cdn.pixabay.com/photo/2017/01/31/13/14/animal-2023924_960_720.png"
-    },
-    {
-      "name": "Haward Play",
-      "location": "572 Statan NY, 12483",
-      "type": "Play Group School",
-      "logoText":
-          "https://cdn.pixabay.com/photo/2016/06/09/18/36/logo-1446293_960_720.png"
-    },
-    {
-      "name": "Campare Handeson",
-      "location": "Kasai Pantan NY, 12483",
-      "type": "Lower Secondary School",
-      "logoText":
-          "https://cdn.pixabay.com/photo/2017/01/13/01/22/rocket-1976107_960_720.png"
-    },
-  ];
+ 
 
        @override
   void initState() {
@@ -97,14 +40,13 @@ class _AddFriendPageState extends State<AddFriendPage> {
         _user.image = users.data["Image"];
         _user.fav = users.data["Fav"];
         _user.plan = users.data["Plan"];
+        _user.friends = users.data["Friends"];
      setState(() {
        if(_user.id!=widget.userId)
        userList.add(_user);
      });
       
     });
-
-    //print(userList);
 
     });
   }
@@ -230,7 +172,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+       // crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
             width: 50,
@@ -315,8 +257,8 @@ class _AddFriendPageState extends State<AddFriendPage> {
                     SizedBox(
                       width: 5,
                     ),
-                    if(userList[index].fav.length>0)
-                    Text(userList[index].plan.length.toString()+" amis",
+                    if(userList[index].friends.length>0)
+                    Text(userList[index].friends.length.toString()+" amis",
                         style: TextStyle(
                              fontSize: 13, letterSpacing: .3))
                              else 
@@ -327,7 +269,12 @@ class _AddFriendPageState extends State<AddFriendPage> {
                 ),
               ],
             ),
-          )
+          ),
+          // Icon(
+          //             Icons.person_add,
+          //             color: LightColor.main,
+          //             size: 40,
+          //           ),
         ],
       ),
         )

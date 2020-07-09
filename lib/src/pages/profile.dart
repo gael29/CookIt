@@ -46,6 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
         _user.image = user.data["Image"];
         _user.fav = user.data["Fav"];
         _user.plan = user.data["Plan"];
+        _user.friends = user.data["Friends"];
         //print(_user.plan[1]["name"]);
         isLoading = false;
       });
@@ -147,7 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Expanded(
                           child: ListTile(
                             title: Text(
-                              "120",
+                              _user.friends.length.toString(),
                               textAlign: TextAlign.center,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
@@ -203,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
         )
       ]),
       ),
-      if(_user.fav.length>0)
+      if(_user.friends.length>0)
       CarouselSlider(
         options: CarouselOptions(
           height: 100,
@@ -211,10 +212,10 @@ class _ProfilePageState extends State<ProfilePage> {
           aspectRatio: 2.0,
           enlargeCenterPage: true,
         ),
-        items: _user.fav
+        items: _user.friends
             .map((item) => InkWell(
       onTap: () {
-        //Navigator.of(context).pushNamed('/detail', arguments: item["id"]);
+        Navigator.of(context).pushNamed('/friend', arguments: item["Id"]);
       },
       child: Container(
                   child: Container(
@@ -228,7 +229,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       backgroundColor: LightColor.main,
                       child: CircleAvatar(
                         radius: SizeConfig.safeBlockVertical*5.5,
-                        backgroundImage: NetworkImage(_user.image),
+                        backgroundImage: NetworkImage(item["Image"]),
                         backgroundColor: Colors.transparent,
                       ),
                     ),

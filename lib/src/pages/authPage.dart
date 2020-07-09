@@ -70,6 +70,7 @@ class _AuthPageState extends State<AuthPage> {
           "Email": _user.email,
           "Fav": _fav,
           "Plan": _plan,
+          "Friends": []
         }).then((_) {
           Navigator.of(context).popAndPushNamed('/auth');
         });
