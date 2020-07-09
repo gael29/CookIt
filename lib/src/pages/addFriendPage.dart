@@ -172,22 +172,22 @@ class _AddFriendPageState extends State<AddFriendPage> {
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Row(
-       // crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.center,
+         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          Container(
-            width: 50,
-            height: 50,
-            margin: EdgeInsets.only(right: 15),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              border: Border.all(width: 3, color: LightColor.main),
-              image: DecorationImage(
-                  image: NetworkImage(userList[index].image),
-                  fit: BoxFit.fill),
-            ),
-          ),
-          Expanded(
-            child: Column(
+          CircleAvatar(
+                      radius: SizeConfig.safeBlockVertical*6,
+                      backgroundColor: LightColor.main,
+                      child: CircleAvatar(
+                        radius: SizeConfig.safeBlockVertical*5.5,
+                        backgroundImage: NetworkImage(userList[index].image),
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                //     SizedBox(
+                //   width: 6,
+                // ),
+        Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
@@ -269,12 +269,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                 ),
               ],
             ),
-          ),
-          // Icon(
-          //             Icons.person_add,
-          //             color: LightColor.main,
-          //             size: 40,
-          //           ),
+          
         ],
       ),
         )

@@ -275,57 +275,33 @@ class _FriendPageState extends State<FriendPage> {
             ]),
       ),
       if (_friend.friends.length > 0)
-        CarouselSlider(
-          options: CarouselOptions(
-            height: 100,
-            autoPlay: false,
-            aspectRatio: 2.0,
-            enlargeCenterPage: true,
-          ),
-          items: _friend.friends
-              .map((item) => InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed('/friend', arguments: item["Id"]);
-                  },
-                  child: Container(
-                    child: Container(
-                      margin: EdgeInsets.all(5.0),
-                      child: ClipRRect(
-                          child: Stack(
-                        children: <Widget>[
-                          CircleAvatar(
-                            radius: SizeConfig.safeBlockVertical * 6,
-                            backgroundColor: LightColor.main,
-                            child: CircleAvatar(
-                              radius: SizeConfig.safeBlockVertical * 5.5,
-                              backgroundImage: NetworkImage(item["Image"]),
-                              backgroundColor: Colors.transparent,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0.0,
-                            left: 0.0,
-                            right: 0.0,
-                            child: Container(
-                              decoration: BoxDecoration(),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10.0, horizontal: 20.0),
-                              child: Text(
-                                "",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )),
-                    ),
-                  )))
-              .toList(),
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        height: SizeConfig.safeBlockVertical*20,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+            itemCount: _friend.friends.length, itemBuilder: (context, index) {
+              return  InkWell(
+                
+    child:Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        height: SizeConfig.safeBlockVertical*20,
+        child:CircleAvatar(
+                      radius: SizeConfig.safeBlockVertical*6,
+                      backgroundColor: LightColor.main,
+                      child: CircleAvatar(
+                        radius: SizeConfig.safeBlockVertical*5.5,
+                        backgroundImage: NetworkImage(_friend.friends[index]["Image"]),
+                        backgroundColor: Colors.transparent,
+                      ),
         )
+    ),
+    onTap: () {
+        Navigator.of(context).pushNamed('/friend', arguments: _friend.friends[index]["Id"]);
+      }
+                    );
+        }),
+      )
       else
         Column(children: <Widget>[
           SizedBox(height: 10),
